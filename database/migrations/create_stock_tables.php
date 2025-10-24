@@ -22,12 +22,12 @@ return new class extends Migration
 
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('category');
+            $table->string('name');
         });
 
         Schema::create('subcategories', function (Blueprint $table) {
             $table->id();
-            $table->string('subcategory');
+            $table->string('name');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
         });
 

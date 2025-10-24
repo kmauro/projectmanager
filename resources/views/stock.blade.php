@@ -38,7 +38,16 @@
     </tr>
   </thead>
   <tbody>
-    <!-- Aquí van las filas de la tabla traidas desde el controlador-->
+    @foreach ($products as $product)
+      <tr>
+        <td>{{ $product['name'] }}</td>
+        <td>{{ $product->subcategory->category->name }}</td>
+        <td>{{ $product->subcategory->name }}</td>
+        <td>{{ $product['price'] }}</td>
+        <td>{{ $product['stock'] }} / {{ $product['min_stock'] }}</td>
+        <td><a href="/job/{{ $product['id'] }}">See Suppliers</a></td>
+      </tr>
+    @endforeach
   </tbody>
 </table>
 

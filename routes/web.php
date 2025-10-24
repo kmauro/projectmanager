@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Models\Product;
 
 //INDEX
 Route::get('/', function () {
@@ -14,7 +14,9 @@ Route::get('/', function () {
 });
 
 Route::get('/stock', function () {
-    return view('stock');
+    return view('stock', [
+        'products' => Product::getData()
+    ]);
 });
 
 
