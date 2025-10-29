@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email');
             $table->string('address');
+            $table->timestamps();
         });
 
         Schema::create('categories', function (Blueprint $table) {
@@ -39,6 +40,7 @@ return new class extends Migration
             $table->float('cost');
             $table->integer('stock');
             $table->integer('min_stock');
+            $table->timestamps();
         });
 
         Schema::create('suppliers_products', function (Blueprint $table) {

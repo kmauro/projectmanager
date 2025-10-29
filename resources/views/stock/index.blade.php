@@ -1,0 +1,66 @@
+<x-layout>
+<div class = "row">
+<h1 class="col-2">Productos</h1>
+
+<!-- if($_SESSION["access_level"] == 1){ -->
+      <a class = "col-1" href="/stock/add"><button type="button" class="btn btn-primary">Agregar</button> </a> <a class="col-1" href="index.php?route=control"> <button type="button" class="btn btn-primary">Control</button></a>
+<!-- } -->
+
+</div>
+
+
+
+
+<table class="table table-dark  table-bordered table-striped">
+<thead>
+    <tr>
+      
+      <th scope="col">Producto</th>
+      <th scope="col">Categoria</th>
+      <th scope="col">Subcategoria</th>
+      
+      <!-- if($_SESSION["access_level"] == 1){ -->
+      <th scope="col">Costo</th>
+      <!-- } -->
+      
+      
+      <th scope="col">Precio</th>
+      <th scope="col">Cantidad</th>
+      <th scope="col">Proveedores</th>
+      <!-- if($_SESSION["access_level"] == 1){ -->
+      <th scope="col">Editar</th>
+      <!-- } -->
+    </tr>
+  </thead>
+  <tbody>
+    @foreach ($products as $product)
+      <tr>
+        <td>{{ $product->name }}</td>
+        <td>{{ $product->subcategory->category->name }}</td>
+        <td>{{ $product->subcategory->name }}</td>
+        <td>{{ $product->cost }}</td>
+        <td>{{ $product->price }}</td>
+        <td class="{{ $product->stock < $product->min_stock ? "text-danger" : "" }}">{{ $product->stock }} / {{ $product->min_stock }}</td>
+        <td><a href="/suppliers/{{ $product->id }}">See Suppliers</a></td>
+        <td><a href="/product/edit/{{ $product->id }}">Edit product</a></td>
+      </tr>
+    @endforeach
+  </tbody>
+  
+</table>
+{{ $products->links() }}
+<style>
+  .row{
+    padding-bottom: 20px;
+  }
+
+  .table {
+    padding-top: 25px;
+    border-radius: 8px;
+    overflow: hidden; /* Evita que los bordes se corten */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+</style>
+
+
+</x-layout>

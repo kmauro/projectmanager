@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('account_type_id')->constrained()->onDelete('cascade');
             $table->string('description')->nullable();
             $table->float('balance')->default(0);
+            $table->timestamps();
         });
 
         Schema::create('expense_types', function (Blueprint $table) {

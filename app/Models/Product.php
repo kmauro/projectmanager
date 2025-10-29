@@ -1,13 +1,15 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
+    use HasFactory;
    protected $fillable = [
        'name',
-       'description',
+       'subcategory_id',
+        'cost',
        'price',
        'stock',
        'min_stock',
@@ -20,9 +22,15 @@ class Product extends Model
 
     public static function getData()
     {
-        return self::with('subcategory.category')->get();
+        return self::with('subcategory.category')->paginate(15);
     }
+    
 
+
+    public function suppliers()
+    {
+        return $this->belongsToMany(Supplier::class, 'suppliers_products');
+    }
 }
 
 ?>
