@@ -29,6 +29,27 @@ Route::get('/stock', function () {
     ]);
 });
 
+Route::get('/stock/control', function () {
+    return view('stock.control', [
+        'products' => Product::getQuantities()
+    ]);
+});
+
+Route::post('/stock/control', function () {
+        $data = request()->validate([
+            'productid'  => 'required|array',
+            'quantity' => 'required|array',
+        ]);
+        foreach ($data['productid'] as $index => $productId) {
+            $product = Product::find($productId);
+            if ($product) {
+                $newQuantity = (int)$data['quantity'][$index];
+                $product->stock = $newQuantity;
+                $product->save();
+            }
+        }
+    return redirect('/stock');
+});
 
 Route::get('/stock/add', function () {
     return view('stock.create');

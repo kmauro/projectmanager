@@ -20,6 +20,10 @@ class Product extends Model
          return $this->belongsTo(Subcategory::class);
     }
 
+    public static function getQuantities(){
+        return self::select('id', 'name', 'stock', 'min_stock')->get();
+    }
+
     public static function getData()
     {
         return self::with('subcategory.category')->paginate(15);

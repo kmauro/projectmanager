@@ -3,7 +3,7 @@
 <h1 class="col-2">Productos</h1>
 
 <!-- if($_SESSION["access_level"] == 1){ -->
-      <a class = "col-1" href="/stock/add"><button type="button" class="btn btn-primary">Agregar</button> </a> <a class="col-1" href="index.php?route=control"> <button type="button" class="btn btn-primary">Control</button></a>
+      <a class = "col-1" href="/stock/add"><button type="button" class="btn btn-primary">Agregar</button> </a> <a class="col-1" href="/stock/control"> <button type="button" class="btn btn-primary">Control</button></a>
 <!-- } -->
 
 </div>
