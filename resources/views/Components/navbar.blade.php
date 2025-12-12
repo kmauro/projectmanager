@@ -1,7 +1,6 @@
 <!-- Sidebar -->
 
 
-
 <div class="sidebar expanded d-flex flex-column flex-shrink-0  " id="sidebar">
         
         <a href="#" class="menu-item" id="toggleBtn"><i class="fa-solid fa-bars"></i> <h1 class="menu-text">SGC</h1> </a>
