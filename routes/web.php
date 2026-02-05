@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Supplier;
+use App\Models\User;
 use App\Http\Controllers\ProductController;
 
 
@@ -18,6 +20,70 @@ Route::get('/', function () {
 
 Route::get('/user', function () {
     return view('user');
+});
+
+Route::post('/user/register', function () {
+    $data = request()->validate([
+        'user' => 'required|string|max:255|unique:users,user',
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email',
+        'password' => 'required|string|min:8',
+        'phone' => 'nullable|string|max:15',
+        'access_level_id' => 'required|exists:access_levels,id',
+    ], [
+        'user.required' => 'El nombre de usuario es obligatorio.',
+        'user.unique' => 'Este nombre de usuario ya está en uso.',
+        'user.max' => 'El nombre de usuario no puede exceder 255 caracteres.',
+        'name.required' => 'El nombre completo es obligatorio.',
+        'name.max' => 'El nombre no puede exceder 255 caracteres.',
+        'email.required' => 'El correo electrónico es obligatorio.',
+        'email.email' => 'Debe ingresar un correo electrónico válido.',
+        'email.unique' => 'Este correo electrónico ya está registrado.',
+        'email.max' => 'El correo electrónico no puede exceder 255 caracteres.',
+        'password.required' => 'La contraseña es obligatoria.',
+        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+        'phone.max' => 'El teléfono no puede exceder 15 caracteres.',
+        'access_level_id.required' => 'Debe seleccionar un nivel de acceso.',
+        'access_level_id.exists' => 'El nivel de acceso seleccionado no es válido.',
+    ]);
+    
+    $user = User::create($data);
+    
+    // Enviar email de verificación
+    try {
+        $user->sendEmailVerificationNotification();
+        return redirect('/user')->with('success', 'Usuario registrado exitosamente. Por favor, verifica tu correo electrónico.');
+    } catch (\Exception $e) {
+        // Si falla el envío del email, aún así guardamos el usuario
+        return redirect('/user')->with('success', 'Usuario registrado exitosamente. Error al enviar email de verificación, contacta al administrador.');
+    }
+});
+
+Route::get('/user/verify-email/{token}', function ($token) {
+    $hashedToken = hash('sha256', $token);
+    
+    $verification = DB::table('email_verification_tokens')
+        ->where('token', $hashedToken)
+        ->first();
+    
+    if (!$verification) {
+        return redirect('/user')->with('error', 'El enlace de verificación no es válido o ha expirado.');
+    }
+    
+    $user = User::find($verification->user_id);
+    
+    if (!$user) {
+        return redirect('/user')->with('error', 'Usuario no encontrado.');
+    }
+    
+    if ($user->email_verified_at) {
+        return redirect('/user')->with('info', 'Tu correo electrónico ya ha sido verificado anteriormente.');
+    }
+    
+    // Verificar el email
+    $user->markEmailAsVerified();
+    
+    return redirect('/user')->with('success', '¡Correo electrónico verificado exitosamente!');
 });
 
 Route::get('/subcategories/{category}', [ProductController::class, 'getSubcategories']);
