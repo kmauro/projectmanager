@@ -34,8 +34,8 @@
                 <label for="category" class="form-label">Categoría</label>
                 <select class="form-select" name="category" id="category">
                     <option value="">Seleccione una categoría</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ $category->id == $product->subcategory->category_id ? 'selected' : '' }}>{{ $category->name }}</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}" {{ $cat->id == $product->subcategory->category_id ? 'selected' : '' }}>{{ $cat->name }}</option>
                     @endforeach
                 </select>
             </div>
