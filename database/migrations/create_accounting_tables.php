@@ -61,11 +61,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('account_types');
-        Schema::dropIfExists('accounts');
-        Schema::dropIfExists('expense_types');
-        Schema::dropIfExists('expenses');
-        Schema::dropIfExists('sales_types');
         Schema::dropIfExists('sales');
+        Schema::dropIfExists('sales_types');
+        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('expense_types');
+        Schema::dropIfExists('accounts');
+        Schema::dropIfExists('account_types');
     }
 };

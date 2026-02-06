@@ -1,11 +1,9 @@
 <x-layout>
 	<div class="row">
 		<h1 class="col-2">Proveedores</h1>
-		<?php
-			//if($_SESSION["access_level"] == 1 && empty($_GET["id"])){
-				echo '<a class = "col-1" href="/supplier/add"><button type="button" class="btn btn-primary">Agregar</button></a>';
-			//}
-		?>
+		<!-- if($_SESSION["access_level"] == 1){ -->
+		<a class = "col-1" href="/supplier/add"><button type="button" class="btn btn-primary">Agregar</button></a>
+		<!-- } -->
 	</div>
 
 	<table class="table table-dark  table-bordered table-striped">

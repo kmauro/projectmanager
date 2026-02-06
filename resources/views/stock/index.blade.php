@@ -41,8 +41,8 @@
         <td>{{ $product->cost }}</td>
         <td>{{ $product->price }}</td>
         <td class="{{ $product->stock < $product->min_stock ? "text-danger" : "" }}">{{ $product->stock }} / {{ $product->min_stock }}</td>
-        <td><a href="/suppliers/{{ $product->id }}">See Suppliers</a></td>
-        <td><a href="/product/edit/{{ $product->id }}">Edit product</a></td>
+        <td><a href="/suppliers/{{ $product->id }}">Ver Proveedores</a></td>
+        <td><a href="/product/edit/{{ $product->id }}">Editar Producto</a></td>
       </tr>
     @endforeach
   </tbody>

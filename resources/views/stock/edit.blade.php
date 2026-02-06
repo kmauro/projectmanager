@@ -1,10 +1,18 @@
 @php
-    DB::enableQueryLog();
     $categories = App\Models\Category::with('subcategories')->get();
     $category = $categories->first(function ($cat) use ($product) {
         return $cat->subcategories->contains('id', $product->subcategory_id);
     });
-    
+    if (!$category) {
+        $category = new App\Models\Category();
+        $category->id = $product->subcategory->category_id;
+        $category->name = $product->subcategory->category->name;
+        $category->subcategories = collect([$product->subcategory]);
+        $subcategory = new App\Models\Subcategory();
+        $subcategory->id = $product->subcategory->id;
+        $subcategory->name = $product->subcategory->name;
+        $subcategory->category_id = $product->subcategory->category_id;
+    }
 
 @endphp
 

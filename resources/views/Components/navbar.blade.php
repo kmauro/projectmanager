@@ -16,10 +16,10 @@
                 <a href="/suppliers" class="menu-item"><i class="bi bi-person-lines-fill"></i> <span class="menu-text">Proveedores</span></a>
             </li>
             <li class="nav-item">
-                <a href="/user" class="menu-item"><i class="bi bi-person-plus"></i> <span class="menu-text">Registro</span></a>
+                <a href="/user/create" class="menu-item"><i class="bi bi-person-plus"></i> <span class="menu-text">Registro</span></a>
             </li>
             <li class="nav-item">
-                <a href="" class="menu-item"><i class=""></i> <span class="menu-text"></span></a>
+                <a href="/" class="menu-item"><i class=""></i> <span class="menu-text"> Copy </span></a>
             </li>
         </ul>
         <hr>
@@ -36,3 +36,5 @@
             </ul> 
         </div>
     </div>
+
+    

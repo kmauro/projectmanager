@@ -9,4 +9,5 @@
             <button type="submit" class="btn btn-danger">Eliminar</button>
             <a href="/suppliers" class="btn btn-secondary">Cancelar</a>
         </form>
+    </div>
 </x-layout>

@@ -18,7 +18,7 @@ class SubcategoryFactory extends Factory
     {
         return [
             'name' => fake()->word(),
-            'category_id' => fake()->randomElement(Category::all()->pluck('id')),
+            'category_id' => Category::factory(),
         ];
     }
 }

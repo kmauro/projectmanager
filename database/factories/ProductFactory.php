@@ -20,7 +20,7 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->words(3, true),
-            'subcategory_id' => fake()->randomElement(Subcategory::all()->pluck('id')),
+            'subcategory_id' => Subcategory::factory(),
             'price' => fake()->randomFloat(2, 1, 100),
             'cost' => fake()->randomFloat(2, 0.5, 80),
             'stock' => fake()->numberBetween(0, 100),

@@ -2,11 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
-use App\Models\Product;
 use App\Models\Supplier;
+use App\Http\Controllers\StockController;
+use App\Models\Product;
 use App\Models\User;
 use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\SupplierController;
 
 //INDEX
 Route::get('/', function () {
@@ -18,8 +19,10 @@ Route::get('/', function () {
     return view('dashboard');
 });
 
-Route::get('/user', function () {
-    return view('user');
+//USERS
+
+Route::get('/user/create', function () {
+    return view('user/create');
 });
 
 Route::post('/user/register', function () {
@@ -33,16 +36,13 @@ Route::post('/user/register', function () {
     ], [
         'user.required' => 'El nombre de usuario es obligatorio.',
         'user.unique' => 'Este nombre de usuario ya está en uso.',
-        'user.max' => 'El nombre de usuario no puede exceder 255 caracteres.',
         'name.required' => 'El nombre completo es obligatorio.',
         'name.max' => 'El nombre no puede exceder 255 caracteres.',
         'email.required' => 'El correo electrónico es obligatorio.',
         'email.email' => 'Debe ingresar un correo electrónico válido.',
         'email.unique' => 'Este correo electrónico ya está registrado.',
-        'email.max' => 'El correo electrónico no puede exceder 255 caracteres.',
         'password.required' => 'La contraseña es obligatoria.',
         'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-        'phone.max' => 'El teléfono no puede exceder 15 caracteres.',
         'access_level_id.required' => 'Debe seleccionar un nivel de acceso.',
         'access_level_id.exists' => 'El nivel de acceso seleccionado no es válido.',
     ]);
@@ -52,10 +52,10 @@ Route::post('/user/register', function () {
     // Enviar email de verificación
     try {
         $user->sendEmailVerificationNotification();
-        return redirect('/user')->with('success', 'Usuario registrado exitosamente. Por favor, verifica tu correo electrónico.');
+        return redirect('user/create')->with('success', 'Usuario registrado exitosamente. Por favor, verifica tu correo electrónico.');
     } catch (\Exception $e) {
         // Si falla el envío del email, aún así guardamos el usuario
-        return redirect('/user')->with('success', 'Usuario registrado exitosamente. Error al enviar email de verificación, contacta al administrador.');
+        return redirect('user/create')->with('success', 'Usuario registrado exitosamente. Error al enviar email de verificación, contacta al administrador.');
     }
 });
 
@@ -67,37 +67,37 @@ Route::get('/user/verify-email/{token}', function ($token) {
         ->first();
     
     if (!$verification) {
-        return redirect('/user')->with('error', 'El enlace de verificación no es válido o ha expirado.');
+        return redirect('user/create')->with('error', 'El enlace de verificación no es válido o ha expirado.');
     }
     
     $user = User::find($verification->user_id);
     
     if (!$user) {
-        return redirect('/user')->with('error', 'Usuario no encontrado.');
+        return redirect('user/create')->with('error', 'Usuario no encontrado.');
     }
     
     if ($user->email_verified_at) {
-        return redirect('/user')->with('info', 'Tu correo electrónico ya ha sido verificado anteriormente.');
+        return redirect('user/create')->with('info', 'Tu correo electrónico ya ha sido verificado anteriormente.');
     }
     
     // Verificar el email
     $user->markEmailAsVerified();
     
-    return redirect('/user')->with('success', '¡Correo electrónico verificado exitosamente!');
+    return redirect('user/create')->with('success', '¡Correo electrónico verificado exitosamente!');
 });
 
 Route::get('/subcategories/{category}', [ProductController::class, 'getSubcategories']);
 
-
+//STOCK
 Route::get('/stock', function () {
     return view('stock.index', [
-        'products' => Product::getData()
+        'products' => StockController::getStock()
     ]);
 });
 
 Route::get('/stock/control', function () {
     return view('stock.control', [
-        'products' => Product::getQuantities()
+        'products' => StockController::getQuantities()
     ]);
 });
 
@@ -106,28 +106,15 @@ Route::post('/stock/control', function () {
             'productid'  => 'required|array',
             'quantity' => 'required|array',
         ]);
-        foreach ($data['productid'] as $index => $productId) {
-            $product = Product::find($productId);
-            if ($product) {
-                $newQuantity = (int)$data['quantity'][$index];
-                $product->stock = $newQuantity;
-                $product->save();
-            }
-        }
-    return redirect('/stock');
+        StockController::updateQuantities($data);
+        return redirect('/stock')->with('success', 'Productos actualizados exitosamente.');
 });
 
 Route::get('/stock/add', function () {
     return view('stock.create');
 });
 
-
-Route::get('/stock/{productId}', function ($productId) {
-    return view('stock.index', [
-        'products' => Product::where('id', $productId)->get()
-    ]);
-}); 
-
+//PRODUCTS
 Route::get('/product/edit/{productId}', function ($productId) {
     return view('stock.edit', [
         'product' => Product::with('subcategory')->find($productId)
@@ -135,9 +122,14 @@ Route::get('/product/edit/{productId}', function ($productId) {
 });
 
 Route::get('/product/delete/{productId}', function ($productId) {
-    return view('stock.delete', [
-        'product' => Product::find($productId)
-    ]);
+    $product = StockController::getProduct($productId);
+    if($product){
+        return view('stock.delete', [
+            'product' => $product
+        ]);
+    }else{
+        return abort(404);
+    }
 });
 
 Route::post('/product/add', function () {
@@ -149,8 +141,8 @@ Route::post('/product/add', function () {
         'stock' => 'required|integer',
         'min_stock' => 'required|integer',
     ]);
-    Product::create($data);
-    return redirect('/stock');
+    ProductController::addProduct($data);
+    return redirect('/stock')->with('success', 'Producto agregado exitosamente.');
 });
 
 Route::post('/product/edit/{productId}', function ($productId) {
@@ -163,16 +155,21 @@ Route::post('/product/edit/{productId}', function ($productId) {
         'stock' => 'required|integer',
         'min_stock' => 'required|integer',
     ]);
+    if(ProductController::updateProduct($data, $productId)){
+        return redirect('/stock')->with('success', 'Producto editado correctamente. ');
+    }else{
+        return redirect('/product/edit/'. $productId)->with('warning', 'Se produjo un error. ');
+    }
     
-    $product = Product::find($productId);
-    $product->update($data);
-    return redirect('/stock');
 });
 
 Route::post('/product/delete/{productId}', function ($productId) {
-    $product = Product::find($productId);
-    $product->delete();
-    return redirect('/stock');
+    
+    if(ProductController::deleteProduct($productId)){
+        return redirect('/stock')->with('success', 'Producto eliminado correctamente. ');
+    }else{
+        return redirect('/product/edit/'. $productId)->with('warning', 'Se produjo un error. ');
+    }
 });
 
 
@@ -180,13 +177,13 @@ Route::post('/product/delete/{productId}', function ($productId) {
 
 Route::get('/suppliers', function () {
     return view('suppliers.index', [
-        'suppliers' => Supplier::paginate(10)
+        'suppliers' => SupplierController::getSuppliers()
     ]);
 });
 
 Route::get('/suppliers/{productId}', function ($productId) {
     return view('suppliers.index', [
-        'suppliers' => Product::find($productId)->suppliers()->paginate(10)
+        'suppliers' => ProductController::getProductSuppliers($productId)
     ]);
 });
 
@@ -195,21 +192,35 @@ Route::get('/supplier/add', function () {
 });
 
 Route::get('/supplier/edit/{supplierId}', function ($supplierId) {
-    return view('suppliers.edit', [
-        'supplier' => Supplier::find($supplierId)
-    ]);
+    $supplier = SupplierController::getSupplier($supplierId);
+    if($supplier){
+        return view('suppliers.edit', [
+            'supplier' => $supplier
+        ]);
+    }else{
+        return abort(404);
+    }
+    
 });
 
 Route::get('/supplier/delete/{supplierId}', function ($supplierId) {
-    return view('suppliers.delete', [
-        'supplier' => Supplier::find($supplierId)
-    ]);
+    $supplier = SupplierController::getSupplier($supplierId);
+    if($supplier){
+        return view('suppliers.delete', [
+            'supplier' => $supplier
+        ]);
+    }else{
+        return abort(404);
+    }
 });
 
 Route::post('/supplier/delete/{supplierId}', function ($supplierId) {
-    $supplier = Supplier::find($supplierId);
-    $supplier->delete();
-    return redirect('/suppliers');
+    if(SupplierController::deleteSupplier($supplierId)){
+        return redirect('/suppliers')->with('success', 'Proveedor eliminado correctamente. ');
+    }else{
+        return redirect('/suppliers')->with('warning', 'Se produjo un error. ');
+    }
+    
 });
 
 Route::post('/supplier/add', function () {
@@ -220,8 +231,8 @@ Route::post('/supplier/add', function () {
         'email' => 'required|email|max:255',
         'address' => 'required|string|max:255',
     ]);
-    Supplier::create($data);
-    return redirect('/suppliers');
+    SupplierController::addSupplier($data);
+    return redirect('/suppliers')->with('success', 'Proveedor agregado correctamente. ');
 });
 
 Route::post('/supplier/edit/{supplierId}', function ($supplierId) {
@@ -233,8 +244,11 @@ Route::post('/supplier/edit/{supplierId}', function ($supplierId) {
         'email' => 'required|email|max:255',
         'address' => 'required|string|max:255',
     ]);
-    $supplier = Supplier::find($supplierId);
-    $supplier->update($data);
-    return redirect('/suppliers');
+    if(SupplierController::updateSupplier($data, $supplierId)){
+        return redirect('/suppliers')->with('success', 'Proveedor modificado correctamente. ');
+    }else{
+        return redirect('/suppliers')->with('warning', 'Se produjo un error. ');
+    }
+    
 });
 
