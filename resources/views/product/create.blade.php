@@ -1,5 +1,6 @@
 @php
     $categories = App\Models\Category::all();
+    $suppliers = App\Models\Supplier::all();
 @endphp
 
 
@@ -49,12 +50,24 @@
                 <input type="number" class="form-control" id="min_stock" name="min_stock" required>
             </div>
             <div class="col-12">
+                <label for="suppliers" class="form-label">Proveedores</label>
+                <select name="suppliers[]" class="form-select select2" multiple>
+                    @foreach($suppliers as $supplier)
+                        <option value="{{ $supplier->id }}">
+                            {{ $supplier->name }}
+                        </option>
+                    @endforeach
+                </select>
+
+            </div>
+            <div class="col-12">
                 <button type="submit" class="btn btn-primary">Agregar Producto</button>
             </div>
         </form>
     </div>
 
     <script>
+        
         document.getElementById('category').addEventListener('change', function() {
             let categoryId = this.value;
             let subcategorySelect = document.getElementById('subcategory_id');

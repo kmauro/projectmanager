@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -54,7 +54,9 @@ class ProductController extends Controller
             'stock' => 'required|integer',
             'min_stock' => 'required|integer',
         ]);
-        if (Product::create($data)){
+        $product = Product::create($data);
+        if ($product){
+            $product->suppliers()->sync($request->input('suppliers', []));    
             return redirect('/stock')->with('success', 'Producto agregado exitosamente.');
         }else{
             return redirect('/product/add')->with('warning', 'Se produjo un error. ');
@@ -74,6 +76,7 @@ class ProductController extends Controller
         $product = Product::find($productId);
         if($product){
             $product->update($data);
+            $product->suppliers()->sync($request->input('suppliers', []));
             return redirect('/stock')->with('success', 'Producto editado correctamente. ');
         }else{
             return redirect('/product/edit/'. $productId)->with('warning', 'Se produjo un error. ');

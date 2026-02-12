@@ -56,6 +56,7 @@ Route::controller(ProductController::class)->group(function()
     Route::get('/product/edit/{productId}', 'getUpdate');
     Route::get('/product/delete/{productId}', 'getDelete');
     Route::get('/suppliers/{productId}', 'getProductSuppliers');
+    Route::get('/subcategories/{categoryId}', 'getSubcategories');
 
     Route::post('/product/add', 'addProduct');
     Route::post('/product/edit/{productId}', 'updateProduct');

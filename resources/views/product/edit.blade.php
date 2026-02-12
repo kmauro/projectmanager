@@ -13,7 +13,8 @@
         $subcategory->name = $product->subcategory->name;
         $subcategory->category_id = $product->subcategory->category_id;
     }
-
+        $selectedSuppliers = $product->suppliers->pluck('id')->toArray();   
+        $suppliers = App\Models\Supplier::all();
 @endphp
 
 <x-layout>
@@ -64,6 +65,19 @@
             <div class="col-md-6">
                 <label for="min_stock" class="form-label">Stock Mínimo</label>
                 <input type="number" class="form-control" id="min_stock" name="min_stock" value="{{ $product->min_stock }}" required>
+            </div>
+            <div class="col-12">
+                <label for="suppliers" class="form-label">Proveedores</label>
+                <select name="suppliers[]" class="form-select select2" multiple>
+                @foreach ($suppliers as $supplier)
+                    <option value="{{ $supplier->id }}"
+                    {{ in_array($supplier->id, $product->suppliers->pluck('id')->toArray()) ? 'selected' : '' }}>
+                    {{ $supplier->name }}
+                    </option>    
+                @endforeach
+                </select>
+                
+
             </div>
             <div class="col-12">
                     <button type="submit" class="btn btn-primary">Actualizar Producto</button>
