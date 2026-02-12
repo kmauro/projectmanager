@@ -35,8 +35,8 @@ it('allows admin to update stock and validates payload', function () {
         'quantity' => [5, 7],
     ];
 
-    // Omitir protección CSRF en este test (se comprueba la lógica del controller)
-    $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class);
+    // Incluir token CSRF explícito en el payload para evitar 419 en este entorno de tests
+    $payload['_token'] = csrf_token();
 
     $this->actingAs($admin)->post('/stock/control', $payload)
         ->assertRedirect('/stock')
