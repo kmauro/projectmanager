@@ -4,8 +4,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\AccessLevel;
 use App\Models\User;
 use App\Models\Product;
-
-uses(RefreshDatabase::class);
+uses(Tests\TestCase::class, RefreshDatabase::class);
 
 it('guest cannot access stock control (redirect or forbidden)', function () {
     $response = $this->get('/stock/control');
