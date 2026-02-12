@@ -3,5 +3,6 @@
 test('the application returns a successful response', function () {
     $response = $this->get('/');
 
-    $response->assertStatus(200);
+    // La ruta raíz redirige al login cuando no hay sesión
+    $response->assertRedirect('/login');
 });

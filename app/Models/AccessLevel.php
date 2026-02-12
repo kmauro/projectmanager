@@ -9,6 +9,9 @@ class AccessLevel extends Model
 {
     use HasFactory;
 
+    // Esta tabla no tiene timestamps en la migración
+    public $timestamps = false;
+
     protected $fillable = [
         'name',
     ];
