@@ -5,10 +5,10 @@ use App\Models\AccessLevel;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(Tests\TestCase::class, RefreshDatabase::class);
 
 it('productpolicy control uses access_levels config', function () {
-    // No DB required: comprobamos la lógica del policy sobre un user "fake"
+    // Config disponible porque estamos usando TestCase (aplicación bootstrapped)
     config(['access_levels.admin' => [42]]);
 
     $user = new User();
