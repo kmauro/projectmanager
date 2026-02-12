@@ -8,10 +8,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('productpolicy control uses access_levels config', function () {
-    $level = AccessLevel::create(['name' => 'Admin']);
-    config(['access_levels.admin' => [$level->id]]);
+    // No DB required: comprobamos la lógica del policy sobre un user "fake"
+    config(['access_levels.admin' => [42]]);
 
-    $user = User::factory()->create(['access_level_id' => $level->id]);
+    $user = new User();
+    $user->access_level_id = 42;
 
     $policy = new ProductPolicy();
 
