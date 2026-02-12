@@ -40,6 +40,9 @@ it('allows admin to update stock and validates payload', function () {
     $request = \Illuminate\Http\Request::create('/stock/control', 'POST', $payload);
     $request->setUserResolver(fn() => $admin);
 
+    // Establecer el usuario autenticado para que Gate/authorize lo reconozca
+    $this->be($admin);
+
     $controller = new \App\Http\Controllers\StockController();
     $response = $controller->updateStock($request);
 
