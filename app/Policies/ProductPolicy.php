@@ -5,9 +5,12 @@ namespace App\Policies;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use App\Policies\Traits\AccessLevelChecks;
 
 class ProductPolicy
 {
+    use AccessLevelChecks;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -26,7 +29,8 @@ class ProductPolicy
 
     public function control(User $user): bool
     {
-        return $user->access_level_id === 1;
+        // Uso centralizado de access levels definido en config/access_levels.php
+        return $this->hasAccessLevel($user, 'admin');
     }
 
     /**
