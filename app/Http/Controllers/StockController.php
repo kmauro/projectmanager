@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 
 class StockController extends Controller
@@ -20,25 +21,31 @@ class StockController extends Controller
     public function control()
     {
         $this->authorize('control', Product::class);
-        return view('stock.control', ['products' => Product::select('id', 'name', 'stock', 'min_stock')->get()]);
+        return view('stock.control', ['products' => Product::select('id', 'name', 'stock', 'min_stock')->get()->paginate(15)]);
     }
 
     
     //POST Methods
     public function updateStock(Request $request)
     {    
-        $data = request()->validate([
+        $this->authorize('control', Product::class);
+        $data = $request->validate([
             'productid'  => 'required|array',
+            'productid.*' => 'required|numeric|exists:products,id',
             'quantity' => 'required|array',
+            'quantity.*' => 'required|integer|min:0',
+
         ]);
-        foreach ($data['productid'] as $index => $productId) {
-            $product = Product::find($productId);
-            if ($product) {
-                $newQuantity = (int)$data['quantity'][$index];
-                $product->stock = $newQuantity;
-                $product->save();
+        DB::transaction(function () use ($data){
+            $products = Product::whereIn('id', $data['productid'])->get()->keyBy('id');
+            foreach ($data['productid'] as $index => $productId) {
+                if (!empty($products[$productId])) {
+                    $newQuantity = (int)$data['quantity'][$index];
+                    $products[$productId]->stock = $newQuantity;
+                    $products[$productId]->save();
+                }
             }
-        }        
+        });    
         return redirect('/stock')->with('success', 'Productos actualizados exitosamente.');
     }
 }
