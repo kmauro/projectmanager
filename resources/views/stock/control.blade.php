@@ -97,6 +97,7 @@ document.getElementById("controlForm").addEventListener("submit", function(e) {
         return;
     }
 
+    
     const modal = new bootstrap.Modal(document.getElementById("confirmModal"));
     modal.show();
 
@@ -104,6 +105,8 @@ document.getElementById("controlForm").addEventListener("submit", function(e) {
         modal.hide();
         form.submit(); // Enviar el formulario tras confirmación
     };
+    
+    
 });
 </script>
 

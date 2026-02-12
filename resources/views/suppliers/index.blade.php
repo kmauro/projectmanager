@@ -35,7 +35,7 @@
                     <td> {{ $supplier->email }} </td>
                     <td> {{ $supplier->phone }} </td>
                     <td> {{ $supplier->address }} </td>
-                    <td><a href="/supplier/edit/{{ $supplier->id }}">Editar</a> | <a href="/supplier/delete/{{ $supplier->id }}">Eliminar</a></td>
+                    <td><a href="/supplier/edit/{{ $supplier->id }}">Editar</a> | <a href="/supplier/delete/{{ $supplier->id }}">Eliminar</a> | <a href="/supplier/{{ $supplier->id }}/products">Productos</a></td>
                 </tr>
                 @endforeach
 

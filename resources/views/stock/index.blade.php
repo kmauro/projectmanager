@@ -2,10 +2,10 @@
 <div class = "row">
 <h1 class="col-2">Productos</h1>
 
-<!-- if($_SESSION["access_level"] == 1){ -->
-      <a class = "col-1" href="/stock/add"><button type="button" class="btn btn-primary">Agregar</button> </a> <a class="col-1" href="/stock/control"> <button type="button" class="btn btn-primary">Control</button></a>
-<!-- } -->
 
+@can('control', App\Models\Product::class)
+      <a class = "col-1" href="/product/add"><button type="button" class="btn btn-primary">Agregar</button> </a> <a class="col-1" href="/stock/control"> <button type="button" class="btn btn-primary">Control</button></a>
+@endcan
 </div>
 
 
@@ -19,17 +19,17 @@
       <th scope="col">Categoria</th>
       <th scope="col">Subcategoria</th>
       
-      <!-- if($_SESSION["access_level"] == 1){ -->
+      
       <th scope="col">Costo</th>
-      <!-- } -->
+      
       
       
       <th scope="col">Precio</th>
       <th scope="col">Cantidad</th>
       <th scope="col">Proveedores</th>
-      <!-- if($_SESSION["access_level"] == 1){ -->
+      
       <th scope="col">Editar</th>
-      <!-- } -->
+      
     </tr>
   </thead>
   <tbody>
@@ -38,11 +38,15 @@
         <td>{{ $product->name }}</td>
         <td>{{ $product->subcategory->category->name }}</td>
         <td>{{ $product->subcategory->name }}</td>
+      
         <td>{{ $product->cost }}</td>
+      
         <td>{{ $product->price }}</td>
         <td class="{{ $product->stock < $product->min_stock ? "text-danger" : "" }}">{{ $product->stock }} / {{ $product->min_stock }}</td>
         <td><a href="/suppliers/{{ $product->id }}">Ver Proveedores</a></td>
+      
         <td><a href="/product/edit/{{ $product->id }}">Editar Producto</a></td>
+      
       </tr>
     @endforeach
   </tbody>

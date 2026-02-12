@@ -5,25 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 
+
 class StockController extends Controller
 {
-    public static function getStock()
+
+    //GET Methods
+    public function show()
     {
-        return Product::with('subcategory.category')->paginate(15);
+        return view('stock.index', [
+            'products' => Product::with('subcategory.category')->paginate(15)]);
+
     }
 
-    public static function getProduct($id)
+    public function control()
     {
-        return Product::find($id);
+        $this->authorize('control', Product::class);
+        return view('stock.control', ['products' => Product::select('id', 'name', 'stock', 'min_stock')->get()]);
     }
+
     
-    public static function getQuantities()
-    {
-        return Product::select('id', 'name', 'stock', 'min_stock')->get();
-    }
-
-    public static function updateQuantities($data)
-    {
+    //POST Methods
+    public function updateStock(Request $request)
+    {    
+        $data = request()->validate([
+            'productid'  => 'required|array',
+            'quantity' => 'required|array',
+        ]);
         foreach ($data['productid'] as $index => $productId) {
             $product = Product::find($productId);
             if ($product) {
@@ -31,7 +38,7 @@ class StockController extends Controller
                 $product->stock = $newQuantity;
                 $product->save();
             }
-        }
-        
+        }        
+        return redirect('/stock')->with('success', 'Productos actualizados exitosamente.');
     }
 }
