@@ -13,6 +13,7 @@ class StockController extends Controller
     //GET Methods
     public function show()
     {
+        $this->authorize('viewAny', Product::class);
         return view('stock.index', [
             'products' => Product::with('subcategory.category')->paginate(15)]);
 
@@ -21,7 +22,7 @@ class StockController extends Controller
     public function control()
     {
         $this->authorize('control', Product::class);
-        return view('stock.control', ['products' => Product::select('id', 'name', 'stock', 'min_stock')->get()->paginate(15)]);
+        return view('stock.control', ['products' => Product::select('id', 'name', 'stock', 'min_stock')->get()]);
     }
 
     

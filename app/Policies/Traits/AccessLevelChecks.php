@@ -21,7 +21,7 @@ trait AccessLevelChecks
      */
     protected function hasAccessLevel(User $user, string|array $ids): bool
     {
-        $collection = is_string($ids) ? $this->accessLevels($ids) : collect($ids);
+        $collection = is_string($ids) ? $this->accessLevels($ids) : collect($ids);    
         return $collection->contains($user->access_level_id);
     }
 }

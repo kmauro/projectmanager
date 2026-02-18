@@ -1,10 +1,7 @@
 <x-layout>
 <div class = "row">
 <h1 class="col-3">Control de Productos</h1>
-
-<!-- if($_SESSION["access_level"] == 1){ -->
       <a class="col-1" href="/stock"> <button type="button" class="btn btn-danger">Volver</button></a>
-<!-- } -->
 
 </div>
 

@@ -7,25 +7,25 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     //GET Methods
     public function getChangePassword()
     {
+        $this->authorize('update', User::class);
         return view('user.edit');
     }
 
-    public function logout(Request $request)
+    public function getLogout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login');
+        return view('auth.logout');
     }
 
     public function getAdd()
     {
+        $this->authorize('create', User::class);
         return view('user.create');
     }
 
@@ -70,8 +70,9 @@ class UserController extends Controller
         ])->onlyInput('user');
     }
 
-    public function addUser(Request $request)
+    public function createUser(Request $request)
     {
+        $this->authorize('create', User::class);
         $data = $request->validate([
             'user' => 'required|string|max:255|unique:users,user',
             'name' => 'required|string|max:255',
@@ -103,18 +104,28 @@ class UserController extends Controller
         }
     }
 
-    public static function changePassword($data)
+    public function changePassword(Request $request)
     {
         $data = request()->validate([
             'user' => 'required|string|max:255',
             'password' => 'required|string|max:255'
         ]);
-        $data['password'] = bcrypt($data['password']);
-        $db_user = User::where('user', $data['user']);
+        
+        $data['password'] = Hash::make($data['password']);
+        $db_user = User::where('user', $data['user'])->first();
        if($db_user){
+            $this->authorize('update', $db_user);    
             $db_user->update($data);
-            return view('dashboard')->with('success', 'Contraseña cambiada exitosamente.');
+            return redirect('dashboard')->with('success', 'Contraseña cambiada exitosamente.');
        } 
-       return view('dashboard')->with('error', 'No se encontró el usuario especificado.');
+       return redirect('dashboard')->with('error', 'No se encontró el usuario especificado.');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('login');
     }
 }

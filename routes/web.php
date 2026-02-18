@@ -30,23 +30,24 @@ Route::controller(UserController::class)->group(function()
 {
     Route::get('/changepassword', 'getChangePassword');
     Route::get('/user/create', 'getAdd');
-    Route::get('/logout', 'logout') ->name('logout');
+    Route::get('/logout', 'getLogout') ->name('logout');
     Route::get('/user/verify-email/{token}', 'verifyEmail');
 
     Route::post('/login', 'login');
-    Route::post('/user/create', 'createUser');
+    Route::post('/user/register', 'createUser');
     Route::post('/user/changepassword', 'changePassword');
-});
+    Route::post('/user/logout', 'logout');
+})->middleware('auth');
 
 
 //STOCK
 Route::controller(StockController::class)->group(function()
 {
-    Route::get('/stock', 'show');
+    Route::get('/stock', 'show')->middleware('auth');
     Route::get('/stock/control', 'control');
 
     Route::post('/stock/control', 'updateStock');
-});
+})->middleware('auth');
 
 
 //PRODUCTS
@@ -61,13 +62,13 @@ Route::controller(ProductController::class)->group(function()
     Route::post('/product/add', 'addProduct');
     Route::post('/product/edit/{productId}', 'updateProduct');
     Route::post('/product/delete/{productId}', 'deleteProduct');
-});
+})->middleware('auth');
 
 
 //SUPPLIERS
 Route::controller(SupplierController::class)->group(function()
 {
-    Route::get('/suppliers', 'getSuppliers');
+    Route::get('/suppliers', 'getSuppliers')->middleware('auth');
     Route::get('/supplier/add', 'getAdd');
     Route::get('/supplier/edit/{supplierId}', 'getUpdate');
     Route::get('/supplier/delete/{supplierId}', 'getDelete');
@@ -77,8 +78,3 @@ Route::controller(SupplierController::class)->group(function()
     Route::post('/supplier/edit/{supplierId}', 'updateSupplier');
     Route::post('/supplier/delete/{supplierId}', 'deleteSupplier');
 });
-
-
-
-
-    

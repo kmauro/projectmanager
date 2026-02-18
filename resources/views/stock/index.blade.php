@@ -3,9 +3,9 @@
 <h1 class="col-2">Productos</h1>
 
 
-@can('control', App\Models\Product::class)
+
       <a class = "col-1" href="/product/add"><button type="button" class="btn btn-primary">Agregar</button> </a> <a class="col-1" href="/stock/control"> <button type="button" class="btn btn-primary">Control</button></a>
-@endcan
+
 </div>
 
 

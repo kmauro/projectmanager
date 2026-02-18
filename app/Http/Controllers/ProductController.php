@@ -13,12 +13,15 @@ class ProductController extends Controller
     //GET Methods
     public function getAdd()
     {
+        $this->authorize('create', Product::class);
         return view('product.create');
     }
 
     public function getUpdate($productId)
     {
         $product = Product::with('subcategory')->find($productId);
+        $this->authorize('update', $product);
+        
         if (!$product) {
             abort(404);
         }
@@ -28,6 +31,7 @@ class ProductController extends Controller
     public function getDelete($productId)
     {
         $product = Product::find($productId);
+        $this->authorize('delete', $product);
         if (!$product) {
             abort(404);
         }
@@ -37,6 +41,7 @@ class ProductController extends Controller
     public function getProductSuppliers($productId)
     {
         $product = Product::find($productId);
+        $this->authorize('view', $product);
         if (!$product) {
             abort(404);
         }
@@ -46,6 +51,7 @@ class ProductController extends Controller
     //POST Methods
     public function addProduct(Request $request)
     {
+        $this->authorize('create');
         $data = request()->validate([
             'name' => 'required|string|max:255',
             'subcategory_id' => 'required|numeric',
@@ -74,6 +80,7 @@ class ProductController extends Controller
         'min_stock' => 'required|integer',
     ]);
         $product = Product::find($productId);
+        $this->authorize('update', $product);
         if($product){
             $product->update($data);
             $product->suppliers()->sync($request->input('suppliers', []));
@@ -87,6 +94,7 @@ class ProductController extends Controller
     public function deleteProduct($productId)
     {
         $product = Product::find($productId);
+        $this->authorize('delete', $product);
         if($product){
             $product->delete();
             return redirect('/stock')->with('success', 'Producto eliminado correctamente. ');
@@ -98,11 +106,10 @@ class ProductController extends Controller
     // Other Methods
     public function getSubcategories($categoryId)
     {
-        $category = Category::find($categoryId);
-        if(!$category){
+        $subcategories = Category::find($categoryId)->subcategories;
+        if(!$subcategories){
             return response()->json([], 404);
         }
-        $subcategories = Category::find($categoryId)->subcategories;
         return response()->json($subcategories);
     }
 }

@@ -1,5 +1,5 @@
 <?php
-
+/** @var \Tests\TestCase $this */
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\AccessLevel;
 use App\Models\User;
