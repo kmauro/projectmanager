@@ -3,7 +3,7 @@
 use App\Http\Controllers\ImporterController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ProyectoController;
+use App\Http\Controllers\ProjectController;
 
 
 //INDEX
@@ -25,7 +25,7 @@ Route::get('/login', function ()
 
 
 
-Route::controller(ProyectoController::class)->group(function()
+Route::controller(ProjectController::class)->group(function()
 {
     Route::get('/projects', 'index')->name('projects');
     Route::get('/projects/create', 'create')->name('projects.create');

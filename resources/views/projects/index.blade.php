@@ -15,7 +15,7 @@
                 @foreach ($projects as $project)
                     <tr>
                         <td>{{ $project->id }}</td>
-                        <td>{{ $project->titulo }}</td>
+                        <td>{{ $project->title }}</td>
                         <td>
                             <a href="#" class="btn btn-primary">Ver más <i class="fas fa-eye"></i></a>
                             <a href="#" class="btn btn-primary">Editar <i class="fas fa-edit"></i></a>

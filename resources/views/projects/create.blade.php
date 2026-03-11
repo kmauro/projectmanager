@@ -12,7 +12,7 @@
         
             <div class="mb-3">
                 <label class="form-label">Seleccionar archivo CSV</label>
-                <input type="file" name="archivo" class="form-control" accept=".csv">
+                <input type="file" name="file" class="form-control" accept=".csv">
             </div>
         
             <button type="submit" class="btn btn-primary">

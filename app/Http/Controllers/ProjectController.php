@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Proyecto;
+use App\Models\Project;
 
-class ProyectoController extends Controller
+class ProjectController extends Controller
 {
     
     
@@ -15,7 +15,7 @@ class ProyectoController extends Controller
 
     public function index()
     {
-        return view('projects.index', ['projects' => Proyecto::paginate(25)]);
+        return view('projects.index', ['projects' => Project::paginate(25)]);
     }
 
     public function create()

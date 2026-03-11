@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class SolicitanteController extends Controller
+class TRLLevelController extends Controller
 {
-    //
+    
 }

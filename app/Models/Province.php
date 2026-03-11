@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Necesidad extends Model
+class Province extends Model
 {
+    use HasFactory;
     public $timestamps = false;
 }

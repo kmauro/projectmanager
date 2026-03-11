@@ -17,14 +17,14 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            ProvinciaSeeder::class,
-            VerticalSeeder::class,
+            ProvinceSeeder::class,
+            AreaSeeder::class,
             SectorSeeder::class,
-            NivelesTRLSeeder::class,
-            TecnologiaSeeder::class,
-            FuentesFinanciamientoSeeder::class,
-            NecesidadSeeder::class,
-            InstitucionSeeder::class,
+            TRLLevelSeeder::class,
+            TechSeeder::class,
+            FinancialSourceSeeder::class,
+            NeedSeeder::class,
+            InstitutionSeeder::class,
             UserSeeder::class
         ]);
     }

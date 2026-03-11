@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Solicitante;
+use App\Models\Applicant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -36,50 +36,35 @@ class ImporterController extends Controller
             // Aquí puedes mapearlas a las columnas de tu tabla y guardar en la base de datos.
 
             //DB::table('solicitantes')->insert([
-            $solicitante = Solicitante::create([
-                'direccion_IP' => $row[6],
-                'usuario' => $row[8],
-                'nombre_completo' => $row[60],
-                'correo' => $row[61],
-                'telefono' => $row[62],
+            $applicant = Applicant::create([
+                'IP_address' => $row[6],
+                'user' => $row[8],
+                'full_name' => $row[60],
+                'email' => $row[61],
+                'phone' => $row[62],
                 'cuil' => $row[63],
-                'institucion_id' => 1,
-                'nombre_empresa' => $row[65],
-                'empresa_CUIT' => $row[66],
+                'institution_id' => 1,  //TODO
+                'company_name' => $row[65],
+                'company_CUIT' => $row[66],
             ]);
             
-            DB::table('proyectos')->insert([
+            DB::table('projects')->insert([
                 'SID' => $row[1],
-                'titulo' => $row[9],
-                'hora_enviado' => Carbon::createFromFormat('d/m/Y - H:i', $row[2])->format('Y-m-d H:i:s'),
-                'hora_completo' => Carbon::createFromFormat('d/m/Y - H:i', $row[3])->format('Y-m-d H:i:s'),
-                'hora_modificado' => Carbon::createFromFormat('d/m/Y - H:i', $row[4])->format('Y-m-d H:i:s'),
-                'solicitante_id' => $solicitante->id,
-                'fecha_inicio' => Carbon::createFromFormat('d/m/Y', $row[10])->format('Y-m-d'),
-                'fecha_fin' => $row[11] == '' ? null : Carbon::createFromFormat('d/m/Y', $row[11])->format('Y-m-d'),
-                'objetivo' => $row[12],
-                'valor_diferencial' => $row[13],
-                'niveles_trl_id' => 1,
-                'vertical_id' => 1,
-                'entidad_radicado' => $row[67],
-                'provincia_id' => 1,
-                'monto_EBCT' => $row[59]
-                
+                'title' => $row[9],
+                'time_sent' => Carbon::createFromFormat('d/m/Y - H:i', $row[2])->format('Y-m-d H:i:s'),
+                'time_completed' => Carbon::createFromFormat('d/m/Y - H:i', $row[3])->format('Y-m-d H:i:s'),
+                'time_modified' => Carbon::createFromFormat('d/m/Y - H:i', $row[4])->format('Y-m-d H:i:s'),
+                'applicant_id' => $applicant->id,
+                'start_date' => Carbon::createFromFormat('d/m/Y', $row[10])->format('Y-m-d'),
+                'end_date' => $row[11] == '' ? null : Carbon::createFromFormat('d/m/Y', $row[11])->format('Y-m-d'),
+                'objective' => $row[12],
+                'innovation_value' => $row[13],
+                'trl_level_id' => 1, //TODO
+                'area_id' => 1, //TODO
+                'located_entity' => $row[67],
+                'province_id' => 1, //TODO
+                'EBCT_amount' => $row[59]
             ]);
-
-            
-            /*
-             * Ejemplo (AJUSTAR A TU TABLA REAL):
-             *
-             * \DB::table('tu_tabla')->insert([
-             *     'columna1' => $row[0] ?? null,
-             *     'columna2' => $row[1] ?? null,
-             *     'columna3' => $row[2] ?? null,
-             *     // ...
-             *     'created_at' => now(),
-             *     'updated_at' => now(),
-             * ]);
-             */
         }
 
         fclose($handle);
@@ -92,14 +77,14 @@ class ImporterController extends Controller
     public static function upload(Request $request): string
     {
         $request->validate([
-            'archivo' => 'required|file|mimes:csv,txt|max:10240',
+            'file' => 'required|file|mimes:csv,txt|max:10240',
         ]);
 
-        if (!$request->hasFile('archivo')) {
+        if (!$request->hasFile('file')) {
             throw new \RuntimeException('Archivo no detectado');
         }
 
-        $file = $request->file('archivo');
+        $file = $request->file('file');
 
         // Guardamos el archivo manualmente en storage/app/imports
         $directory = storage_path('app/imports');

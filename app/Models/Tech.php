@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class NivelesTRL extends Model
+class Tech extends Model
 {
     public $timestamps = false;
 }

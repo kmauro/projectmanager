@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Vertical extends Model
+class area extends Model
 {
     public $timestamps = false;
     protected $fillable = [
-        'vertical'
+        'area'
     ];
 }

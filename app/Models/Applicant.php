@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Solicitante extends Model
+class Applicant extends Model
 {
     /** @use HasFactory<\Database\Factories\SolicitanteFactory> */
     use HasFactory;
@@ -13,14 +13,14 @@ class Solicitante extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'direccion_IP',
-        'usuario',
-        'nombre_completo',
-        'correo',
-        'telefono',
+        'IP_address',
+        'user',
+        'full_name',
+        'email',
+        'phone',
         'cuil',
-        'institucion_id',
-        'nombre_empresa',
-        'empresa_CUIT'
+        'institution_id',
+        'company_name',
+        'company_CUIT'
     ];
 }

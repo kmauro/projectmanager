@@ -12,124 +12,110 @@ return new class extends Migration
     public function up(): void
     {
 
-        Schema::create('instituciones', function (Blueprint $table) {
+        Schema::create('institutions', function (Blueprint $table) {
             $table->id();
-            $table->string('institucion');
+            $table->string('institution');
         });
-
-        Schema::create('solicitantes', function (Blueprint $table) {
+        Schema::create('applicants', function (Blueprint $table) {
             $table->id();
-            $table->string('direccion_IP');
-            $table->string('usuario');
-            $table->string('nombre_completo');
-            $table->string('correo');
-            $table->string('telefono');
+            $table->string('IP_address');
+            $table->string('user');
+            $table->string('full_name');
+            $table->string('email');
+            $table->string('phone');
             $table->string('cuil');
-            $table->foreignId('institucion_id')->constrained('instituciones')->onDelete('cascade');
-            $table->string('nombre_empresa');
-            $table->string('empresa_CUIT');
+            $table->foreignId('institution_id')->constrained('institutions')->onDelete('cascade');
+            $table->string('company_name');
+            $table->string('company_CUIT');
         });
-
-        Schema::create('niveles_trl', function (Blueprint $table) {
+        Schema::create('trl_levels', function (Blueprint $table) {
             $table->id();
             $table->string('trl');
         });
-
-        Schema::create('verticales', function (Blueprint $table) {
+        Schema::create('areas', function (Blueprint $table) {
             $table->id();
-            $table->string('vertical');
+            $table->string('area');
         });
-        
-        Schema::create('provincias', function (Blueprint $table){
+        Schema::create('provinces', function (Blueprint $table){
             $table->id();
-            $table->string('provincia');
+            $table->string('province');
         });
-
-        Schema::create('proyectos', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->integer('SID');
-            $table->string('titulo');
-            $table->dateTime('hora_enviado');
-            $table->dateTime('hora_completo');
-            $table->dateTime('hora_modificado');
-            $table->foreignId('solicitante_id')->constrained('solicitantes')->onDelete('cascade');
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin')->nullable(true);
-            $table->longText('objetivo');
-            $table->longText('valor_diferencial');
-            $table->foreignId('niveles_trl_id')->constrained('niveles_trl')->onDelete('cascade');
-            $table->foreignId('vertical_id')->constrained('verticales')->onDelete('cascade');
-            $table->string('entidad_radicado');
-            $table->foreignId('provincia_id')->constrained('provincias')->onDelete('cascade');
-            $table->string('monto_EBCT')->nullable(true);
+            $table->string('title');
+            $table->dateTime('time_sent');
+            $table->dateTime('time_completed');
+            $table->dateTime('time_modified');
+            $table->foreignId('applicant_id')->constrained('applicants')->onDelete('cascade');
+            $table->date('start_date');
+            $table->date('end_date')->nullable(true);
+            $table->longText('objective');
+            $table->longText('innovation_value');
+            $table->foreignId('trl_level_id')->constrained('trl_levels')->onDelete('cascade');
+            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
+            $table->string('located_entity');
+            $table->foreignId('province_id')->constrained('provinces')->onDelete('cascade');
+            $table->string('EBCT_amount')->nullable(true);
         });
-
-        Schema::create('tecnologias', function (Blueprint $table) {
+        Schema::create('techs', function (Blueprint $table) {
             $table->id();
-            $table->string('tecnologia');
+            $table->string('tech');
         });
-
-        Schema::create('proyectos_tecnologias', function (Blueprint $table) {
-            $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
-            $table->foreignId('tecnologia_id')->constrained('tecnologias')->onDelete('cascade');
-            $table->string('otra_tecnologia')->nullable(true);
+        Schema::create('project_techs', function (Blueprint $table) {
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('tech_id')->constrained('techs')->onDelete('cascade');
+            $table->string('other_tech')->nullable(true);
         });
-
-        Schema::create('necesidades', function (Blueprint $table) {
+        Schema::create('needs', function (Blueprint $table) {
             $table->id();
-            $table->string('necesidad');
-            $table->foreignId('necesidad_padre_id')->nullable(true)->constrained('necesidades')->onDelete('cascade');
+            $table->string('need');
+            $table->foreignId('parent_need_id')->nullable(true)->constrained('needs')->onDelete('cascade');
         });
-
-        Schema::create('proyectos_necesidades', function (Blueprint $table) {
-            $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
-            $table->foreignId('necesidad_id')->constrained('necesidades')->onDelete('cascade');
-            $table->string('otro_equipamiento')->nullable(true);
-            $table->string('otra_necesidad')->nullable(true);
+        Schema::create('projects_needs', function (Blueprint $table) {
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('need_id')->constrained('needs')->onDelete('cascade');
+            $table->string('other_equipment')->nullable(true);
+            $table->string('other_need')->nullable(true);
         });
-
-        Schema::create('fuentes_financiamiento', function (Blueprint $table) {
+        Schema::create('financial_sources', function (Blueprint $table) {
             $table->id();
-            $table->string('fuente');
-            $table->string('tipo');
+            $table->string('source');
+            $table->string('type');
         });
-
-        Schema::create('proyectos_fuentes_financiamiento', function (Blueprint $table) {
-            $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
-            $table->foreignId('fuente_id')->constrained('fuentes_financiamiento')->onDelete('cascade');
-            $table->string('otra_fuente')->nullable(true);
-            $table->float('porcentaje');
-            $table->integer('monto');
+        Schema::create('projects_financial_sources', function (Blueprint $table) {
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('source_id')->constrained('financial_sources')->onDelete('cascade');
+            $table->string('other_source')->nullable(true);
+            $table->float('percentage');
+            $table->integer('amount');
         });
-
-        Schema::create('sectores', function (Blueprint $table) {
+        Schema::create('sectors', function (Blueprint $table) {
             $table->id();
             $table->string('sector');
-            $table->foreignId('sector_padre_id')->nullable(true)->constrained('sectores')->onDelete('cascade');
+            $table->foreignId('parent_sector_id')->nullable(true)->constrained('sectors')->onDelete('cascade');
         });
-
-        Schema::create('proyectos_sectores', function (Blueprint $table) {
-            $table->foreignId('proyecto_id')->constrained('proyectos')->onDelete('cascade');
-            $table->foreignId('sector_id')->constrained('sectores')->onDelete('cascade');
+        Schema::create('projects_sectors', function (Blueprint $table) {
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('sector_id')->constrained('sectors')->onDelete('cascade');
         });
     }
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
-        Schema::dropIfExists('instituciones');
-        Schema::dropIfExists('solicitantes');
-        Schema::dropIfExists('niveles_trl');
-        Schema::dropIfExists('verticales');
-        Schema::dropIfExists('tecnologias');
-        Schema::dropIfExists('provincias');
-        Schema::dropIfExists('proyectos');
-        Schema::dropIfExists('necesidades');
-        Schema::dropIfExists('proyectos_necesidades');
-        Schema::dropIfExists('fuentes_financiamiento');
-        Schema::dropIfExists('proyectos_fuentes_financiamiento');
-        Schema::dropIfExists('sectores');
-        Schema::dropIfExists('proyectos_sectores');
+        Schema::dropIfExists('institutions');
+        Schema::dropIfExists('applicants');
+        Schema::dropIfExists('trl_levels');
+        Schema::dropIfExists('areas');
+        Schema::dropIfExists('provinces');
+        Schema::dropIfExists('projects');
+        Schema::dropIfExists('techs');
+        Schema::dropIfExists('project_techs');
+        Schema::dropIfExists('needs');
+        Schema::dropIfExists('projects_needs');
+        Schema::dropIfExists('financial_sources');
+        Schema::dropIfExists('projects_financial_sources');
+        Schema::dropIfExists('sectors');
+        Schema::dropIfExists('projects_sectors');
     }
 };
