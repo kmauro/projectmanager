@@ -1,29 +1,41 @@
 <?php
 
+use App\Http\Controllers\ImporterController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\StockController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProyectoController;
+
 
 //INDEX
 Route::get('/', function ()
 {
-    if (!Auth::check()) {
+    /* if (!Auth::check()) {
         return redirect()->route('login');
-    }
+    } */
     return view('dashboard');
 })->name('dashboard');
 
 Route::get('/login', function ()
 {
-    if (Auth::check()) {
+    /* if (Auth::check()) {
         return redirect()->route('dashboard');
-    }
+    } */
     return view('auth.login');
 })->name('login');
 
+
+
+Route::controller(ProyectoController::class)->group(function()
+{
+    Route::get('/projects', 'index')->name('projects');
+    Route::get('/projects/create', 'create')->name('projects.create');
+    
+});
+
+Route::controller(ImporterController::class)->group(function()
+{
+    Route::post('/projects/upload', 'upload')->name('projects.upload');
+});
 
 //USER 
 Route::controller(UserController::class)->group(function()
@@ -37,44 +49,5 @@ Route::controller(UserController::class)->group(function()
     Route::post('/user/register', 'createUser');
     Route::post('/user/changepassword', 'changePassword');
     Route::post('/user/logout', 'logout');
-})->middleware('auth');
-
-
-//STOCK
-Route::controller(StockController::class)->group(function()
-{
-    Route::get('/stock', 'show')->middleware('auth');
-    Route::get('/stock/control', 'control');
-
-    Route::post('/stock/control', 'updateStock');
-})->middleware('auth');
-
-
-//PRODUCTS
-Route::controller(ProductController::class)->group(function()
-{
-    Route::get('/product/add', 'getAdd');
-    Route::get('/product/edit/{productId}', 'getUpdate');
-    Route::get('/product/delete/{productId}', 'getDelete');
-    Route::get('/suppliers/{productId}', 'getProductSuppliers');
-    Route::get('/subcategories/{categoryId}', 'getSubcategories');
-
-    Route::post('/product/add', 'addProduct');
-    Route::post('/product/edit/{productId}', 'updateProduct');
-    Route::post('/product/delete/{productId}', 'deleteProduct');
-})->middleware('auth');
-
-
-//SUPPLIERS
-Route::controller(SupplierController::class)->group(function()
-{
-    Route::get('/suppliers', 'getSuppliers')->middleware('auth');
-    Route::get('/supplier/add', 'getAdd');
-    Route::get('/supplier/edit/{supplierId}', 'getUpdate');
-    Route::get('/supplier/delete/{supplierId}', 'getDelete');
-    Route::get('/supplier/{supplierId}/products', 'getSupplierProducts');
-
-    Route::post('/supplier/add', 'addSupplier');
-    Route::post('/supplier/edit/{supplierId}', 'updateSupplier');
-    Route::post('/supplier/delete/{supplierId}', 'deleteSupplier');
 });
+

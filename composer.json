@@ -10,9 +10,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "illuminate/support": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "laravel/ui": "^4.6"
+        "laravel/ui": "^4.6",
+        "symfony/css-selector": "7.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",

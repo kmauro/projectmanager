@@ -2,12 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Subcategory;
-use App\Models\Supplier;
-use App\Models\SupplierProduct;
+
 use App\Models\User;
+use App\Models\Provincia;;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,17 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        /* User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]); */
-        Category::factory(5)->create();
-        Subcategory::factory(10)->create();
-        Product::factory(50)->create();
-        Supplier::factory(20)->create();
-        SupplierProduct::factory(100)->create();
-
+        $this->call([
+            ProvinciaSeeder::class,
+            VerticalSeeder::class,
+            SectorSeeder::class,
+            NivelesTRLSeeder::class,
+            TecnologiaSeeder::class,
+            FuentesFinanciamientoSeeder::class,
+            NecesidadSeeder::class,
+            InstitucionSeeder::class,
+            UserSeeder::class
+        ]);
     }
 }

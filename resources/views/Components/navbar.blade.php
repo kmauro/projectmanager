@@ -3,31 +3,20 @@
 
 <div class="sidebar expanded d-flex flex-column flex-shrink-0  " id="sidebar">
         
-        <a href="#" class="menu-item" id="toggleBtn"><i class="fa-solid fa-bars"></i> <h1 class="menu-text">SGC</h1> </a>
+        <a href="#" class="menu-item" id="toggleBtn"><i class="fa-solid fa-bars"></i> <h3 class="menu-text">Project Manager</h3> </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">	
                 <a href="/" class="menu-item"><i class="fas fa-home"></i> <span class="menu-text">Inicio</span></a>
             </li>
-            
             <li class="nav-item">
-                <a href="/stock" class="menu-item"><i class="bi bi-box-seam-fill"></i> <span class="menu-text">Stock</span></a>
+                <a href="{{ route('projects.create') }}" class="menu-item"><i class=""></i> <span class="menu-text"> Cargar datos </span></a>
             </li>
             <li class="nav-item">
-                <a href="#" class="menu-item"><i class=""></i> <span class="menu-text"> Nueva venta </span></a>
-            </li>
-            
-            
-            <li class="nav-item">
-                <a href="/suppliers" class="menu-item"><i class="bi bi-person-lines-fill"></i> <span class="menu-text">Proveedores</span></a>
-            </li>
-            
-            
-            <li class="nav-item">
-                <a href="#" class="menu-item"><i class=""></i> <span class="menu-text"> Historial de ventas </span></a>
+                <a href="{{ route('projects') }}" class="menu-item"><i class=""></i> <span class="menu-text"> Buscador</span></a>
             </li>
             <li class="nav-item">
-                <a href="#" class="menu-item"><i class=""></i> <span class="menu-text"> Contaduria </span></a>
+                <a href="#" class="menu-item"><i class=""></i> <span class="menu-text"> Editar Proyecto</span></a>
             </li>
             
         </ul>

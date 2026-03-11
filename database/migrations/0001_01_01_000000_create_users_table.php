@@ -12,16 +12,12 @@ return new class extends Migration
     public function up(): void
     {
 
-        Schema::create('access_levels', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-        });
+        
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('user')->unique();
             $table->string('password');
-            $table->foreignId('access_level_id')->constrained('access_levels')->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -51,7 +47,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('access_levels');
+        
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
