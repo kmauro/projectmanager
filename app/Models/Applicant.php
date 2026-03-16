@@ -12,15 +12,20 @@ class Applicant extends Model
 
     public $timestamps = false;
 
+    protected $table = 'applicants';
+
     protected $fillable = [
-        'IP_address',
-        'user',
-        'full_name',
-        'email',
-        'phone',
-        'cuil',
-        'institution_id',
-        'company_name',
-        'company_CUIT'
+        
     ];
+
+
+    public function project()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    public function institution()
+    {
+        return $this->hasMany(Institution::class);
+    }
 }

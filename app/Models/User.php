@@ -19,12 +19,12 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    public $timestamps = true;
+
+    protected $table = 'users';
+
     protected $fillable = [
-        'user',
-        'name',
-        'email',
-        'password',
-        'phone',
+        
     ];
 
     /**

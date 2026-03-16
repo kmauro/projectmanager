@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Province extends Model
 {
-    use HasFactory;
     public $timestamps = false;
+
+    protected $table = 'provinces';
+
+    protected $fillable = [
+        
+    ];
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
 }

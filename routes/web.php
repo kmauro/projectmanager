@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ImporterController;
+use App\Http\Controllers\ImportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
@@ -32,7 +32,7 @@ Route::controller(ProjectController::class)->group(function()
     
 });
 
-Route::controller(ImporterController::class)->group(function()
+Route::controller(ImportController::class)->group(function()
 {
     Route::post('/projects/upload', 'upload')->name('projects.upload');
 });

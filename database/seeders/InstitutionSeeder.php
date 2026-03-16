@@ -20,7 +20,7 @@ class InstitutionSeeder extends Seeder
             ['institution' => 'Mixta (2 o más instituciones del SCT, Gobiernos, Cámaras, etc.)'],
             ['institution' => 'Asociaciones civiles sin fines de lucro (ONGs, Sindicatos, etc.)'],
             ['institution' => 'Empresas, cooperativas, cámaras empresariales'],
-            ['institution' => 'Startup / Empresa de Base Científica Tecnológica (EBCT)'],
+            ['institution' => 'Startup/Empresa de Base Científica Tecnológica (EBCT)'],
             ['institution' => 'S.A.P.E.M.'],
         ];
 

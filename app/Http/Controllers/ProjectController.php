@@ -8,12 +8,8 @@ use App\Models\Project;
 class ProjectController extends Controller
 {
     
-    
-    
-    
 
-
-    public function index()
+    public static function index()
     {
         return view('projects.index', ['projects' => Project::paginate(25)]);
     }

@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class area extends Model
+class ProjectNeed extends Model
 {
     public $timestamps = false;
+
+    protected $table = 'projects_needs';
+
     protected $fillable = [
-        'area'
+        
     ];
 }
