@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\{Area, FinancialSource, Institution, Need, Province, Sector, Tech, TRLLevel};
 
 class DataImportService implements ShouldQueue
@@ -61,7 +61,7 @@ class DataImportService implements ShouldQueue
         fgetcsv($handle, 0, ','); // fila 3 (encabezados)
 
         
-        //Se guardan los datos especificos del solicitante y se relaciona con los datos
+        //Se iteran las filas del archivo y se guardan los datos especificos del solicitante y se relaciona con los datos
         //del proyecto.
         while (($row = fgetcsv($handle, 0, ',')) !== false) {
 
@@ -81,7 +81,7 @@ class DataImportService implements ShouldQueue
                     'email' => $row[61],
                     'phone' => $row[62],
                     'cuil' => $row[63],
-                    'institution_id' => $institutions[ImportController::dataNormalizer($row[64])] ?? null,
+                    'institution_id' => $institutions[ImportController::dataNormalizer($row[64])] ?? 1,
                     'company_name' => $row[65],
                     'company_CUIT' => $row[66],
                 ]);
@@ -107,14 +107,13 @@ class DataImportService implements ShouldQueue
                 //RELACIONES MUCHOS A MUCHOS
                 //tech relation
 
-
-                $techIds = ImportController::dataCheck($row[16], $techs);
+                $techIds = ImportController::saveSelectedTechs($row[16], ImportController::dataNormalizer($row[17]), $techs);
 
                 foreach($techIds as $techID){
                     DB::table('projects_techs')->insert([
                         'project_id' => $projectID,
-                        'tech_id' => $techID,
-                        'other_tech' => $row[17]
+                        'tech_id' => $techID
+                        
                     ]);
                 }
 
@@ -137,8 +136,6 @@ class DataImportService implements ShouldQueue
                     $intelectualIds = ImportController::dataCheck($row[72], $needs);
                     $needIds = array_unique(array_merge($needIds, $intelectualIds));
                 }
-
-                
                 foreach($needIds as $needId){
                     DB::table('projects_needs')->insert([
                         'project_id' => $projectID,
@@ -149,8 +146,9 @@ class DataImportService implements ShouldQueue
                     ]);
                 }
 
+                //sector relation
 
-
+                //financial source relation
 
             });
         }

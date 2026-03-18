@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('email')->nullable(true);
             $table->string('phone')->nullable(true);
             $table->string('cuil')->nullable(true);
-            $table->foreignId('institution_id')->constrained('institutions')->onDelete('cascade');
+            $table->foreignId('institution_id')->nullable(true)->constrained('institutions')->onDelete('cascade');
             $table->string('company_name')->nullable(true);
             $table->string('company_CUIT')->nullable(true);
         });
@@ -72,11 +72,12 @@ return new class extends Migration
         Schema::create('techs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->boolean('predefined')->default(true);
         });
         Schema::create('projects_techs', function (Blueprint $table) {
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->foreignId('tech_id')->constrained('techs')->onDelete('cascade');
-            $table->string('other_tech')->nullable(true);
+            
         });
         Schema::create('needs', function (Blueprint $table) {
             $table->id();
