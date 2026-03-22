@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Project;
+use App\Repositories\ProjectRepository;
 
 class ProjectController extends Controller
 {
@@ -11,11 +11,11 @@ class ProjectController extends Controller
 
     public static function index()
     {
-        return view('projects.index', ['projects' => Project::paginate(25)]);
+        return view('projects.index', ['projects' => ProjectRepository::getProjectsPaginated(25)]);
     }
 
-    public function create()
+    public function uploadFile()
     {
-        return view('projects.create');
+        return view('projects.upload');
     }
 }

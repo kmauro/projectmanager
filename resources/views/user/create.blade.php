@@ -1,6 +1,3 @@
-@php
-    $accessLevels = App\Models\AccessLevel::all();
-@endphp
 
 <x-layout>
     <div class="row">
@@ -88,21 +85,6 @@
                     <label for="phone" class="form-label">Teléfono</label>
                     <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" autocomplete="off" placeholder="(011) 1234-5678" value="{{ old('phone') }}">
                     @error('phone')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="col-12">
-                    <label for="access_level_id" class="form-label">Nivel de Acceso <span class="text-danger">*</span></label>
-                    <select class="form-select @error('access_level_id') is-invalid @enderror" name="access_level_id" id="access_level_id" required>
-                        <option value="">Seleccione un nivel de acceso</option>
-                        @foreach($accessLevels as $accessLevel)
-                            <option value="{{ $accessLevel->id }}" {{ old('access_level_id') == $accessLevel->id ? 'selected' : '' }}>
-                                {{ $accessLevel->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('access_level_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

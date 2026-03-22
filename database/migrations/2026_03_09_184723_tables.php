@@ -51,6 +51,7 @@ return new class extends Migration
             $table->id();
             $table->string('province');
         });
+        //LO MISMO ACA
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->integer('SID')->nullable(true);
@@ -72,7 +73,7 @@ return new class extends Migration
         Schema::create('techs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('predefined')->default(true);
+            $table->boolean('predefined');
         });
         Schema::create('projects_techs', function (Blueprint $table) {
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');

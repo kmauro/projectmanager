@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
 
+    //Parametros de BD
     public $timestamps = false;
 
     protected $table = 'projects';
@@ -16,6 +17,11 @@ class Project extends Model
     ];
 
 
+    //Métodos
+
+
+
+    //Relaciones de objetos
     public function applicant()
     {
         return $this->belongsTo(Applicant::class);

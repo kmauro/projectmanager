@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ImportController;
+use App\Http\Controllers\FileImportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
@@ -28,13 +28,14 @@ Route::get('/login', function ()
 Route::controller(ProjectController::class)->group(function()
 {
     Route::get('/projects', 'index')->name('projects');
-    Route::get('/projects/create', 'create')->name('projects.create');
+    
     
 });
 
-Route::controller(ImportController::class)->group(function()
+Route::controller(FileImportController::class)->group(function()
 {
-    Route::post('/projects/upload', 'upload')->name('projects.upload');
+    Route::get('/files/upload', 'getUploadFileView')->name('files.upload');
+    Route::post('/projects/upload', 'uploadFile')->name('projects.upload');
 });
 
 //USER 

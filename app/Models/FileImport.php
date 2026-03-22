@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Import extends Model
+class FileImport extends Model
 {
     public $timestamps = false;
 
@@ -18,5 +18,7 @@ class Import extends Model
         'error_message',
         'created_at'
     ];
+
+    
 }
 
