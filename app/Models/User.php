@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\EmailVerificationNotification;
-use App\Services\EmailVerificationService;
 
 class User extends Authenticatable
 {
@@ -24,6 +23,11 @@ class User extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
+        'user',
+        'name',
+        'password',
+        'email',
+        'phone',
         
     ];
 
@@ -50,25 +54,10 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Enviar notificación de verificación de email
-     */
-    public function sendEmailVerificationNotification(): void
+    public function sendNotification($token)
     {
-        $service = app(EmailVerificationService::class);
-        $token = $service->generateToken($this->email, $this->id);
         $this->notify(new EmailVerificationNotification($token));
     }
 
-    /**
-     * Verificar el email del usuario
-     */
-    public function markEmailAsVerified(): void
-    {
-        $this->email_verified_at = now();
-        $this->save();
-
-        $service = app(EmailVerificationService::class);
-        $service->deleteToken($this->email);
-    }
+    
 }
