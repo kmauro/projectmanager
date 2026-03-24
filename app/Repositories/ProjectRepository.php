@@ -16,6 +16,17 @@ class ProjectRepository
         return Project::paginate($quantity);
     }
 
+    public static function getProject($id)
+    {
+        $project =  Project::find($id);
+        if(empty($project)){
+            abort(404);
+        }
+        $applicant = ApplicantRepository::getApplicant($project->applicant_id);
+
+        return collect(['project' => $project, 'applicant' => $applicant]);
+    }
+
 
     public function insertGetId($project)
     {

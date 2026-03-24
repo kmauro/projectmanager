@@ -1,7 +1,7 @@
 
 <x-layout>
     <div class="row">
-        <h1 class="col-3">Registro de Usuarios</h1>
+        <h1 class="col-12">Registro de Usuario</h1>
     </div>
     
     <!-- Mensajes de éxito, error e info -->

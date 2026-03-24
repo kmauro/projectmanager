@@ -1,18 +1,19 @@
 body {
     display: flex;
+    
 }
 /* Sidebar Estilos */
 .sidebar {
     width: 60px;
     height: 100vh;
-    background-color: #343a40; /* Gris oscuro */
+    background-color:#343a40; /* Gris oscuro */
     color: white;
     transition: width 0.3s ease;
     overflow: hidden;
     position: fixed;
 }
 .sidebar.expanded {
-    width: 250px;
+    width: 255px;
 }
 .sidebar .menu-item {
     display: flex;
@@ -51,6 +52,9 @@ body {
     
 }
 
+i.navbarIcon{
+    margin-right: 5px;
+}
 
 main {
     margin-left: 250px; /* Ajuste cuando el menú está colapsado */

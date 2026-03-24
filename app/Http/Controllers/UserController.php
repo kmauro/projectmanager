@@ -14,7 +14,7 @@ class UserController extends Controller
     //GET Methods
     public function getChangePassword()
     {
-        $this->authorize('update', User::class);
+        //$this->authorize('update', User::class);
         return view('user.edit');
     }
 
@@ -25,7 +25,7 @@ class UserController extends Controller
 
     public function getAdd()
     {
-        $this->authorize('create', User::class);
+        //$this->authorize('create', User::class);
         return view('user.create');
     }
 

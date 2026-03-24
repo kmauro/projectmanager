@@ -23,4 +23,13 @@ class ApplicantRepository
         return $applicantId ?? null;
 
     }
+
+    public static function getApplicant($applicantId)
+    {
+        $applicant = Applicant::find($applicantId);
+        if(empty($applicant)){
+            abort(404);
+        }
+        return $applicant;
+    }
 }

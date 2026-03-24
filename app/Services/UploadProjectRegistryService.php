@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Jobs\UploadTechRegistryJob;
 use Illuminate\Support\Carbon;
+use App\Services\FileImportService;
 
 
 use App\Repositories\{ApplicantRepository, FileImportRepository, AreaRepository, TechRepository, ProvinceRepository, InstitutionRepository, TRLLevelRepository, NeedRepository, FinancialSourceRepository, ProjectRepository, SectorRepository};
@@ -90,32 +91,34 @@ class UploadProjectRegistryService
         while (($row = fgetcsv($handle, 0, ',')) !== false) {
             $projectRegistry[] = collect([
                 'applicant' => [
-                    'IP_address' => $row[6],
+                    'IP_address' => FileImportService::dataNormalizer($row[6]),
                     //'IP_address' => $row[$mappedColumns['applicant_IP']],
-                    'user' => $row[8],
-                    'full_name' => $row[60],
-                    'email' => $row[61],
-                    'phone' => $row[62],
-                    'cuil' => $row[63],
+                    'user' => FileImportService::dataNormalizer($row[8]),
+                    'full_name' => FileImportService::dataNormalizer($row[60]),
+                    'email' => FileImportService::dataNormalizer($row[61]),
+                    'phone' => FileImportService::dataNormalizer($row[62]),
+                    'cuil' => FileImportService::dataNormalizer($row[63]),
                     'institution_id' => $row[64],
-                    'company_name' => $row[65],
-                    'company_CUIT' => $row[66],
+                    'company_name' => FileImportService::dataNormalizer($row[65]),
+                    'company_CUIT' => FileImportService::dataNormalizer($row[66]),
                 ],
                 'project' => [
-                    'SID' => $row[1],
-                    'title' => $row[9],
-                    'time_sent' => $row[2],
-                    'time_completed' => $row[3],
-                    'time_modified' => $row[4],
-                    'start_date' => $row[10],
-                    'end_date' => $row[11],
-                    'objective' => $row[12],
-                    'innovation_value' => $row[13],
-                    'trl_level_id' => $row[14],
-                    'area_id' => $row[15],
-                    'located_entity' => $row[67],
-                    'province_id' => $row[68],
-                    'EBCT_amount' => $row[59],
+                    'SID' => FileImportService::dataNormalizer($row[1]),
+                    'title' => FileImportService::dataNormalizer($row[9]),
+                    'time_sent' => Carbon::createFromFormat('d/m/Y - H:i', $row[2])->format('Y-m-d H:i:s'),
+                    'time_completed' => Carbon::createFromFormat('d/m/Y - H:i', $row[3])->format('Y-m-d H:i:s'),
+                    'time_modified' => Carbon::createFromFormat('d/m/Y - H:i', $row[4])->format('Y-m-d H:i:s'),
+                    'start_date' => Carbon::createFromFormat('d/m/Y', $row[10])->format('Y-m-d'),
+                    'end_date' => $row[11] == '' ? null : Carbon::createFromFormat('d/m/Y', $row[11])->format('Y-m-d'),
+                    'objective' => FileImportService::dataNormalizer($row[12]),
+                    'innovation_value' => FileImportService::dataNormalizer($row[13]),
+                    'trl_level_id' => FileImportService::dataNormalizer($row[14]),
+                    'area_id' => FileImportService::dataNormalizer($row[15]),
+                    'located_entity' => FileImportService::dataNormalizer($row[67]),
+                    'province_id' => FileImportService::dataNormalizer($row[68]),
+                    'EBCT_amount' => FileImportService::dataNormalizer($row[59]),
+                    'selectedTechs' => FileImportService::dataNormalizer($row[16]),
+                    'other_tech' => FileImportService::dataNormalizer($row[17])
                 ],
             ]);
 
@@ -175,15 +178,15 @@ class UploadProjectRegistryService
             $applicant = $projectRegistry['applicant'];
 
             //Guardo el id de la institucion en vez del nombre
-            $applicant['institution_id'] = $institutions[$applicant['institution_id']];
+            $applicant['institution_id'] = $institutions[$applicant['institution_id']] ?? 1;
 
             //guardamos la info del aplicante y le asignamos el id al proyecto
             $project['applicant_id'] = $applicantRepo->insertGetId($applicant);
 
             //consigo las ids de las fk
-            $project['province_id'] = $provinces[$project['province_id']];
-            $project['area_id'] = $areas[$project['area_id']];
-            $project['trl_level_id'] = $trl_levels[$project['trl_level_id']];
+            $project['province_id'] = $provinces[$project['province_id']] ?? 1;
+            $project['area_id'] = $areas[$project['area_id']] ?? 1;
+            $project['trl_level_id'] = $trl_levels[$project['trl_level_id']] ?? 1;
 
             //Guardamos la info del proyecto 
             $projectId = $projectRepo->insertGetId($project);

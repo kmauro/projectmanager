@@ -28,6 +28,8 @@ Route::get('/login', function ()
 Route::controller(ProjectController::class)->group(function()
 {
     Route::get('/projects', 'index')->name('projects');
+    Route::get('/project/view/{id}', 'viewProject')->name('project.view');
+    Route::get('/project/edit/{id}', 'editProject')->name('project.edit');
     
     
 });
