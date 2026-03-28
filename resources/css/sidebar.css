@@ -1,20 +1,99 @@
 body {
+    margin: 0;
+}
+
+/* Shell: cabecera 10% altura, cuerpo con sidebar + contenido */
+.app-shell {
+    min-height: 100vh;
     display: flex;
-    
+    flex-direction: column;
 }
-/* Sidebar Estilos */
-.sidebar {
-    width: 60px;
-    height: 100vh;
-    background-color:#343a40; /* Gris oscuro */
-    color: white;
-    transition: width 0.3s ease;
+
+.app-header {
+    flex: 0 0 10vh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    position: fixed;
+    border-bottom: 3px solid #E7BA61;
 }
-.sidebar.expanded {
+
+.app-header > header,
+.app-header .navbar {
+    flex: 1;
+    min-height: 0;
+}
+
+.app-body {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: stretch;
+    min-height: 0;
+}
+
+.app-sidebar {
     width: 255px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #232D4F;
+    min-height: 0;
 }
+
+.app-footer {
+    flex: 0 0 15vh;
+    min-height: 0;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.app-footer footer {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    max-width: none;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    border-top: 3px solid #E7BA61;
+    background-color: #232D4F;
+}
+
+.app-footer footer > .container-fluid {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.app-content {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 20px;
+    transition: none;
+}
+
+
+
+/* Sidebar Estilos — ancho fijo, sin colapsar */
+.sidebar {
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    background-color: #232D4F;
+    color: white;
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+    transition: none;
+}
+
+.sidebar.expanded {
+    width: 100%;
+}
+
 .sidebar .menu-item {
     display: flex;
     align-items: center;
@@ -32,8 +111,8 @@ body {
     text-align: center;
 }
 .sidebar .menu-text {
-    opacity: 0;
-    transition: opacity 0.3s;
+    opacity: 1;
+    transition: none;
     white-space: nowrap;
 }
 .sidebar.expanded .menu-text {
@@ -56,11 +135,11 @@ i.navbarIcon{
     margin-right: 5px;
 }
 
-main {
-    margin-left: 250px; /* Ajuste cuando el menú está colapsado */
+main:not(.app-content) {
+    margin-left: 0;
     padding: 20px;
-    transition: margin-left 0.3s ease;
-    width: 100%;
+    transition: none;
+    width: auto;
 }
 
 
@@ -71,3 +150,4 @@ main {
     overflow: hidden; /* Evita que los bordes se corten */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
+

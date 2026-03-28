@@ -4,6 +4,11 @@
             {{ session('success') }}
         </div>
     @endif
+    @if(session('error'))
+        <div class="alert alert-error">
+            {{ session('error') }}
+        </div>
+    @endif
     <h1>Crear Proyecto</h1>
 
     <div class="main-content">
