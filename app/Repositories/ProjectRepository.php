@@ -50,53 +50,51 @@ class ProjectRepository
         return $projectId ?? null;
     }
 
-    public function insertProjectTechs($projectId, $techIds)
+    public function insertProjectTechs($projectId, array $techIds)
     {
-        foreach($techIds as $techId){
-            ProjectTech::insert([
-                'project_id' => $projectId,
-                'tech_id' => $techId
-                
-            ]);
+        $data = array_map(fn($id) => [
+            'project_id' => $projectId,
+            'tech_id' => $id
+        ], $techIds);
+
+        if (!empty($data)) {
+            ProjectTech::insert($data);
         }
     }
 
-    public function insertProjectNeeds($projectId, $needIds)
+    public function insertProjectNeeds($projectId, array $needIds)
     {
-        foreach($needIds as $needId){
-            ProjectNeed::insert([
-                'project_id' => $projectId,
-                'need_id' => $needId
-            ]);
-        }
-      /*foreach($needIds as $needId){
-            ProjectNeed::insert([
-                'project_id' => $projectId,
-                'need_id' => $needId,
-                'other_equipment' => $row[71],
-                'other_need' => $row[74],
-                'countries' => $row[73]
-            ]);
-        }*/
-    }
+        $data = array_map(fn($id) => [
+            'project_id' => $projectId,
+            'need_id' => $id
+        ], $needIds);
 
-    public function insertProjectFinancialSources($projectId, $sourceIds)
-    {
-        foreach($sourceIds as $sourceId){
-            ProjectFinancialSource::insert([
-                'project_id' => $projectId,
-                'financial_source_id' => $sourceId
-            ]);
+        if (!empty($data)) {
+            ProjectNeed::insert($data);
         }
     }
 
-    public function insertProjectSectors($projectId, $sectorIds)
+    public function insertProjectFinancialSources($projectId, array $sourceIds)
     {
-        foreach($sectorIds as $sectorId){
-            ProjectSector::insert([
-                'project_id' => $projectId,
-                'sector_id' => $sectorId
-            ]);
+        $data = array_map(fn($id) => [
+            'project_id' => $projectId,
+            'financial_source_id' => $id
+        ], $sourceIds);
+
+        if (!empty($data)) {
+            ProjectFinancialSource::insert($data);
+        }
+    }
+
+    public function insertProjectSectors($projectId, array $sectorIds)
+    {
+        $data = array_map(fn($id) => [
+            'project_id' => $projectId,
+            'sector_id' => $id
+        ], $sectorIds);
+
+        if (!empty($data)) {
+            ProjectSector::insert($data);
         }
     }
 }
