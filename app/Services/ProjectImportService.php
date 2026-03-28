@@ -8,7 +8,8 @@ class ProjectImportService
 {
     public function __construct(
         private FileImportRepository $importRepository,
-        private ProjectImportParser $parser
+        private ProjectImportParser $parser,
+        private ProjectPersistenceService $persistenceService
     ) {}
 
     public function processUpload($file)
@@ -19,7 +20,7 @@ class ProjectImportService
 
         $projectRegistry = $this->parser->parseFile($uploadedFilePath);
 
-        $this->parser->persistToDatabase($projectRegistry);
+        $this->persistenceService->persistToDatabase($projectRegistry);
     }
 
     private function saveFile($file)

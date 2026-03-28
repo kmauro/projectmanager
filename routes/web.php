@@ -34,7 +34,7 @@ Route::controller(ProjectController::class)->group(function()
     
 });
 
-Route::controller(ProjectTechImportController::class)->group(function()
+Route::controller(ProjectImportController::class)->group(function()
 {
     Route::get('/files/upload', 'showUploadForm')->name('files.upload');
     Route::post('/projects/upload', 'import')->name('projects.upload');

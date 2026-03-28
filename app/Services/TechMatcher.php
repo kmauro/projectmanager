@@ -6,7 +6,7 @@ use App\Repositories\TechRepository;
 
 class TechMatcher
 {
-    public function resolveTechIds(string $selectedTechs, string $otherTech, array $predefinedTechs): array
+    public function resolveTechIds(string $selectedTechs, string $otherTech, iterable $predefinedTechs): array
     {
         $ids = $this->matchPredefinedTechs($selectedTechs, $predefinedTechs);
 
@@ -18,7 +18,7 @@ class TechMatcher
         return $ids;
     }
 
-    private function matchPredefinedTechs(string $selectedTechs, array $predefinedTechs): array
+    private function matchPredefinedTechs(string $selectedTechs, iterable $predefinedTechs): array
     {
         $ids = [];
 
