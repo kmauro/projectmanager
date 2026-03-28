@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 
 use App\Services\UploadProjectRegistryService;
-use Illuminate\Support\Facades\DB;
+
 
 
 
@@ -35,7 +35,11 @@ class FileImportController extends Controller
         $file = $request->file('file');
         
         $uploadFile = app(UploadProjectRegistryService::class);
-        $uploadFile->uploadProjectRegistryFile($file);
+        if ($uploadFile->uploadProjectRegistryFile($file)){
+            return back()->with('success', 'Archivo subido correctamente, ingresando datos...');
+        }else{
+            return back()->with('error', 'No se pudo subir el archivo.');
+        }
     }
 
 

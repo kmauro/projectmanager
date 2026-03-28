@@ -7,7 +7,7 @@ use App\Models\FileImport;
 class FileImportRepository
 {
     public function createImportRecord($record){
-        FileImport::create([
+        return FileImport::insert([
             'file_path' => $record,
             'status' => 'pending',
         ]);

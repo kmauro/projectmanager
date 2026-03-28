@@ -79,7 +79,7 @@
                     <tr>
                         <th class="col-md-1">ID</th>
                         <th class="col-md-6">Nombre</th>
-                        <th class="col-md-1">Acciones</th>
+                        <th class="col-md-2">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>

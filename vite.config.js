@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/sass/app.scss',
                 'resources/css/sidebar.css',
                 'resources/js/app.js',
+                'resources/imgs/logo_argentina-azul.svg',
             ],
             refresh: true,
         }),

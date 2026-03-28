@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\FileImportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\FileImportController;
 
 
 //INDEX
@@ -36,7 +36,7 @@ Route::controller(ProjectController::class)->group(function()
 
 Route::controller(FileImportController::class)->group(function()
 {
-    Route::get('/files/upload', 'getUploadFileView')->name('files.upload');
+    Route::get('/projects/upload', 'getUploadFileView')->name('files.upload');
     Route::post('/projects/upload', 'uploadFile')->name('projects.upload');
 });
 

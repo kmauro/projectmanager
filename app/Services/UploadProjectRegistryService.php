@@ -48,13 +48,13 @@ class UploadProjectRegistryService
         //llamo al repositorio para guardar el registro de la importacion
         //dispatch
         $importRecord = app(FileImportRepository::class);
-        $importRecord->createImportRecord($uploadedFilePath);
+        $response = $importRecord->createImportRecord($uploadedFilePath);
         
         
         UploadTechRegistryJob::dispatch($uploadedFilePath);
         
         
-        return back()->with('success', 'Archivo subido correctamente, ingresando datos...');
+        return $response;
         
     }
 
