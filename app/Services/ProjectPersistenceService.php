@@ -52,9 +52,9 @@ class ProjectPersistenceService
 
                 // Resolve FK names to IDs
                 $project['province_id'] = $this->resolveId($provinces, $project['province_id'], 'Provincia');
-                $project['area_id'] = $this->resolveId($areas, $project['area_id'], 'Área');
+                $project['area_id'] = $this->resolveId($areas, $project['area_id'], 'Area');
                 $project['trl_level_id'] = $this->resolveId($trlLevels, $project['trl_level_id'], 'Nivel TRL');
-
+                
                 // Insert project
                 $projectId = $this->projectRepo->insertGetId($project);
 
@@ -67,7 +67,7 @@ class ProjectPersistenceService
         });
     }
 
-    private function resolveId(array $map, string $name, string $entityName): int
+    private function resolveId($map, string $name, string $entityName): int
     {
         if (!isset($map[$name])) {
             throw new \RuntimeException("El registro de {$entityName} '{$name}' no existe en la base de datos.");

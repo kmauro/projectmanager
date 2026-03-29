@@ -10,7 +10,7 @@
                 <a href="/" class="menu-item"><i class="navbarIcon fas fa-home"></i> <span class="menu-text">Inicio</span></a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('projects.upload') }}" class="menu-item"><i class="navbarIcon bi bi-upload"></i> <span class="menu-text"> Cargar datos </span></a>
+                <a href="{{ route('files.upload') }}" class="menu-item"><i class="navbarIcon bi bi-upload"></i> <span class="menu-text"> Cargar datos </span></a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('projects') }}" class="menu-item"><i class="navbarIcon bi bi-search"></i> <span class="menu-text"> Buscador</span></a>

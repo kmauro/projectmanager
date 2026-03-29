@@ -13,30 +13,30 @@ class ProjectImportParser
      * Define the mapping between internal keys and CSV header names.
      */
     private const HEADER_MAPPING = [
-        'ip_address' => 'IP Address',
-        'user' => 'User',
-        'full_name' => 'Nombre completo',
-        'email' => 'Email',
-        'phone' => 'Teléfono',
+        'ip_address' => 'Dirección IP',
+        'user' => 'Nombre de usuario',
+        'full_name' => 'Nombre y apellido',
+        'email' => 'Correo electrónico',
+        'phone' => 'Teléfono de contacto',
         'cuil' => 'CUIL',
         'institution' => 'Institución',
-        'company_name' => 'Nombre empresa',
-        'company_cuit' => 'CUIT empresa',
+        'company_name' => 'Nombre de la empresa',
+        'company_cuit' => 'CUIT',
         'sid' => 'SID',
         'title' => 'Título',
-        'time_sent' => 'Fecha envío',
-        'time_completed' => 'Fecha completado',
-        'time_modified' => 'Fecha modificado',
-        'start_date' => 'Fecha inicio',
-        'end_date' => 'Fecha fin',
+        'time_sent' => 'Submitted Time',
+        'time_completed' => 'Completed Time',
+        'time_modified' => 'Modified Time',
+        'start_date' => 'Año de inicio',
+        'end_date' => 'Año de finalización',
         'objective' => 'Objetivo',
-        'innovation_value' => 'Valor innovación',
-        'trl_level' => 'Nivel TRL',
-        'area' => 'Área',
-        'located_entity' => 'Entidad',
+        'innovation_value' => 'diferencia',
+        'trl_level' => 'grado de desarrollo',
+        'area' => 'vertical',
+        'located_entity' => 'entidad o institución',
         'province' => 'Provincia',
-        'ebct_amount' => 'Monto EBCT',
-        'selected_techs' => 'Tecnologías',
+        'ebct_amount' => 'EBCT/Startup',
+        'selected_techs' => 'tecnologías',
         'other_tech' => 'Otras tecnologías',
     ];
 
@@ -55,11 +55,11 @@ class ProjectImportParser
         }
 
         // Skip initial descriptive rows
-        fgetcsv($handle); // row 1
-        fgetcsv($handle); // row 2
-        
+        fgetcsv($handle, 0, ',', '"', '\\'); // row 1
+        fgetcsv($handle, 0, ',', '"', '\\'); // row 2
+
         // Read header row (row 3)
-        $headers = fgetcsv($handle);
+        $headers = fgetcsv($handle, 0, ',', '"', '\\');
         if (!$headers) {
             throw new \RuntimeException('No se pudo leer la fila de encabezados.');
         }
@@ -68,7 +68,7 @@ class ProjectImportParser
 
         $projectRegistry = [];
 
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
             $projectRegistry[] = collect([
                 'applicant' => [
                     'IP_address' => $this->getValue($row, 6, 'ip_address'),
@@ -110,7 +110,7 @@ class ProjectImportParser
 
     private function buildColumnMap(array $headers): void
     {
-        $this->columnMap = array_flip(array_map('trim', $headers));
+        $this->columnMap = array_flip($headers);
     }
 
     private function getValue(array $row, int $defaultIndex, string $mapKey): string
@@ -118,12 +118,14 @@ class ProjectImportParser
         // Use the map if available, otherwise fallback to default index (legacy support)
         // Note: In a production environment, we should probably only rely on the map.
         $headerName = self::HEADER_MAPPING[$mapKey] ?? null;
+        
         $index = ($headerName && isset($this->columnMap[$headerName])) 
             ? $this->columnMap[$headerName] 
             : $defaultIndex;
-
+        
         $value = $row[$index] ?? '';
-        return DataNormalizer::normalize($value);
+        
+        return $this->normalize($value);
     }
 
     private function parseDateTime(?string $value): ?string
@@ -144,5 +146,12 @@ class ProjectImportParser
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    public function normalize(string $data): string
+    {
+        $data = trim($data);
+        $data = str_replace("\t", " ", $data);
+        return preg_replace('/\s+/', ' ', $data);
     }
 }
