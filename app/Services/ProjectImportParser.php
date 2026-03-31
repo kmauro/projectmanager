@@ -9,36 +9,104 @@ class ProjectImportParser
 {
     private array $columnMap = [];
 
+
     /**
      * Define the mapping between internal keys and CSV header names.
      */
     private const HEADER_MAPPING = [
+        'serial_number' => 'Número de serie',
+        'sid' => 'SID',
+        'time_sent' => 'Submitted Time',
+        'time_completed' => 'Completed Time',
+        'time_modified' => 'Modified Time',
+        'draft' => 'Borrador',
         'ip_address' => 'Dirección IP',
+        'uid' => 'UID',
         'user' => 'Nombre de usuario',
+    
+        // Proyecto
+        'title' => 'Título del proyecto',
+        'start_date' => 'Año de inicio del proyecto',
+        'end_date' => 'Año de finalización del proyecto',
+        'objective' => 'objetivo proyecto',
+        'innovation_value' => 'diferencia',
+        'trl_level' => 'grado de desarrollo',
+        'area' => 'vertical',
+        'selected_techs' => 'tecnologías',
+        'other_tech' => 'Especificá cuál',
+        'application_sector' => 'sector/actividad/área',
+    
+        // Sectores
+        'sector_agriculture_general' => 'Agricultura, ganadería, caza, silvicultura y pesca',
+        'sector_agriculture' => 'Agricultura, ganadería, caza y servicios de apoyo',
+        'sector_forestry' => 'Silvicultura',
+        'sector_mining' => 'Explotación de minas y canteras',
+        'sector_oil_gas' => 'petróleo crudo y gas natural',
+        'sector_manufacturing' => 'Industria manufacturera',
+        'sector_food' => 'productos alimenticios',
+        'sector_beverages' => 'bebidas',
+        'sector_pharma' => 'farmacéuticos',
+        'sector_electronics' => 'informáticos, electrónicos',
+        'sector_automotive' => 'vehículos automotores',
+        'sector_transport_equipment' => 'equipo de transporte',
+        'sector_transport' => 'Transporte y almacenamiento',
+        'sector_hospitality' => 'Alojamiento y servicios de comida',
+        'sector_it' => 'Información y comunicaciones',
+        'sector_finance' => 'Intermediación financiera',
+        'sector_health' => 'salud humana',
+        'sector_culture' => 'cultura, deporte',
+    
+        // Financiamiento público
+        'public_funding_source' => 'Fuente de financiamiento público',
+        'funding_agencia_idi' => 'Agencia I+D+i',
+        'funding_mincyt' => 'MINCyT',
+        'funding_desarrollo_productivo' => 'Desarrollo Productivo',
+        'funding_cfi' => 'CFI',
+        'funding_provincial' => 'provincial/municipal',
+        'funding_cic' => 'CIC',
+        'funding_universities' => 'universidades',
+        'funding_conicet' => 'CONICET',
+        'funding_spu' => 'SPU',
+        'funding_public_awards' => 'premios/distinciones',
+        'other_public_funding' => 'Otra institución pública',
+    
+        // Financiamiento privado
+        'private_funding_source' => 'Fuente de financiamiento privado',
+        'funding_banks' => 'sector bancario',
+        'funding_investment_funds' => 'Fondo de inversión',
+        'funding_accelerators' => 'aceleradora',
+        'funding_angel' => 'inversor ángel',
+        'funding_companies' => 'empresas/cámaras',
+        'funding_international' => 'organismos internacionales',
+        'funding_own' => 'recursos propios',
+        'funding_private_awards' => 'premios/distinciones',
+        'other_private_funding' => 'Otro financiamiento privado',
+    
+        // Startup
+        'ebct_amount' => 'EBCT/Startup',
+    
+        // Persona
         'full_name' => 'Nombre y apellido',
         'email' => 'Correo electrónico',
         'phone' => 'Teléfono de contacto',
         'cuil' => 'CUIL',
-        'institution' => 'Institución',
+    
+        // Institución
+        'institution' => 'tipo de institución',
         'company_name' => 'Nombre de la empresa',
         'company_cuit' => 'CUIT',
-        'sid' => 'SID',
-        'title' => 'Título',
-        'time_sent' => 'Submitted Time',
-        'time_completed' => 'Completed Time',
-        'time_modified' => 'Modified Time',
-        'start_date' => 'Año de inicio',
-        'end_date' => 'Año de finalización',
-        'objective' => 'Objetivo',
-        'innovation_value' => 'diferencia',
-        'trl_level' => 'grado de desarrollo',
-        'area' => 'vertical',
         'located_entity' => 'entidad o institución',
-        'province' => 'Provincia',
-        'ebct_amount' => 'EBCT/Startup',
-        'selected_techs' => 'tecnologías',
-        'other_tech' => 'Otras tecnologías',
+        'province' => 'provincia',
+    
+        // Escalamiento
+        'scaling_needs' => 'Necesidades para el escalamiento',
+        'equipment' => 'Equipamiento',
+        'equipment_detail' => 'Especificá cuál',
+        'ip_rights' => 'propiedad intelectual',
+        'ip_countries' => 'máximo tres países',
+        'other_needs' => 'Otras necesidades',
     ];
+
 
     public function parseFile(string $uploadedFilePath): Collection
     {
@@ -64,11 +132,11 @@ class ProjectImportParser
             throw new \RuntimeException('No se pudo leer la fila de encabezados.');
         }
 
-        $this->buildColumnMap($headers);
-
+        $this->mapColumnHeaders($headers);
         $projectRegistry = [];
 
         while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
+            
             $projectRegistry[] = collect([
                 'applicant' => [
                     'IP_address' => $this->getValue($row, 6, 'ip_address'),
@@ -108,19 +176,40 @@ class ProjectImportParser
         return collect($projectRegistry);
     }
 
-    private function buildColumnMap(array $headers): void
-    {
-        $this->columnMap = array_flip($headers);
+    function mapColumnHeaders(array $fileHeaders) {
+        
+    
+        // normalizar headers una sola vez
+        $normalizedHeaders = [];
+        foreach ($fileHeaders as $i => $header) {
+            $normalizedHeaders[$i] = $this->normalize($header);
+        }
+        $mapping = self::HEADER_MAPPING;
+        //Buscamos similitudes entre los titulos y las constantes
+        foreach ($mapping as $key => $searchText) {
+            $normalizedSearch = $this->normalize($searchText);
+
+            foreach ($normalizedHeaders as $index => $header) {
+                if (str_contains($header, $normalizedSearch)) {
+                    $this->columnMap[$key] = $index;
+                    unset($normalizedHeaders[$index]);
+                    break;
+                }
+            }            
+        }
+    
     }
+
+    
 
     private function getValue(array $row, int $defaultIndex, string $mapKey): string
     {
         // Use the map if available, otherwise fallback to default index (legacy support)
         // Note: In a production environment, we should probably only rely on the map.
-        $headerName = self::HEADER_MAPPING[$mapKey] ?? null;
         
-        $index = ($headerName && isset($this->columnMap[$headerName])) 
-            ? $this->columnMap[$headerName] 
+        
+        $index = (!empty($this->columnMap[$mapKey]))
+            ? $this->columnMap[$mapKey] 
             : $defaultIndex;
         
         $value = $row[$index] ?? '';
