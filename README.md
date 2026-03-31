@@ -7,7 +7,52 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Docker Setup
+
+This project uses [Laravel Sail](https://laravel.com/docs/sail) for local development with Docker.
+
+### Prerequisites
+
+- Docker Desktop installed and running.
+
+### Installation
+
+1. Clone the repository and navigate to the project directory.
+2. Create your `.env` file from the example:
+   ```bash
+   cp .env.example .env
+   ```
+3. Install PHP dependencies using a temporary Docker container (if you don't have PHP/Composer installed locally):
+   ```bash
+   docker run --rm \
+       -u "$(id -u):$(id -g)" \
+       -v "$(pwd):/var/www/html" \
+       -w /var/www/html \
+       laravelsail/php83-composer:latest \
+       composer install --ignore-platform-reqs
+   ```
+4. Start the Docker containers:
+   ```bash
+   ./vendor/bin/sail up -d
+   ```
+5. Generate an application key:
+   ```bash
+   ./vendor/bin/sail artisan key:generate
+   ```
+6. Run database migrations:
+   ```bash
+   ./vendor/bin/sail artisan migrate
+   ```
+
+### Useful Commands
+
+- Stop the containers: `./vendor/bin/sail stop`
+- Run tests: `./vendor/bin/sail test`
+- Run Artisan commands: `./vendor/bin/sail artisan ...`
+- Access Mailpit (Email testing): [http://localhost:8025](http://localhost:8025)
+
 ## About Laravel
+
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
