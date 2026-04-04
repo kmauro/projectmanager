@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Strategies;
 
 use App\Repositories\TechRepository;
 
-class TechMatcher
+class TechStrategy implements MatchInterface
 {
-    public function resolveTechIds(string $selectedTechs, string $otherTech, iterable $predefinedTechs): array
+    public function matchId($selectedTechs, $otherTech, $predefinedTechs)
     {
         $ids = $this->matchPredefinedTechs($selectedTechs, $predefinedTechs);
 

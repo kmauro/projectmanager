@@ -45,7 +45,8 @@ class ProjectRepository
             'area_id' => $project['area_id'],
             'located_entity' => $project['located_entity'],
             'province_id' => $project['province_id'],
-            'EBCT_amount' => $project['EBCT_amount']
+            'EBCT_amount' => $project['EBCT_amount'],
+            'countries' => $project['countries']
         ]);
         return $projectId ?? null;
     }
@@ -56,7 +57,7 @@ class ProjectRepository
             'project_id' => $projectId,
             'tech_id' => $id
         ], $techIds);
-
+        
         if (!empty($data)) {
             ProjectTech::insert($data);
         }
@@ -64,11 +65,11 @@ class ProjectRepository
 
     public function insertProjectNeeds($projectId, array $needIds)
     {
+        
         $data = array_map(fn($id) => [
             'project_id' => $projectId,
             'need_id' => $id
         ], $needIds);
-
         if (!empty($data)) {
             ProjectNeed::insert($data);
         }

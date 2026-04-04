@@ -15,6 +15,14 @@ use App\Repositories\{
     SectorRepository
 };
 
+use App\Services\Strategies\{
+    MatcherContext,
+    TechStrategy,
+    NeedStrategy
+};
+
+use Illuminate\Support\Facades\DB;
+
 class ProjectPersistenceService
 {
     public function __construct(
@@ -25,21 +33,32 @@ class ProjectPersistenceService
         private TRLLevelRepository $trlLevelRepo,
         private AreaRepository $areaRepo,
         private TechRepository $techRepo,
-        private TechMatcher $techMatcher
+        private NeedRepository $needRepo,
+        
     ) {}
 
+    /**
+     * Receives the Collection from the Parser already normalized and structured, resolves the ids
+     * for the string fields such as provinces, institutions, etc. and matches the ids for the 
+     * other fields (techs, needs, etc.)
+     */
     public function persistToDatabase(\Illuminate\Support\Collection $projectRegistry): void
     {
-        \Illuminate\Support\Facades\DB::transaction(function () use ($projectRegistry) {
+        DB::transaction(function () use ($projectRegistry) {
+
             $provinces = $this->provinceRepo->getProvincesIndexedByName();
             $institutions = $this->institutionRepo->getInstitutionsIndexedByName();
             $trlLevels = $this->trlLevelRepo->getTRLLevelsIndexedByName();
             $areas = $this->areaRepo->getAreasIndexedByName();
             $techs = $this->techRepo->getPredefinedTechs();
-
+            $needs = $this->needRepo->getPredefinedNeeds();
+            
+            $strategyContext = app(MatcherContext::class);
+            
             foreach ($projectRegistry as $record) {
                 $project = $record['project'];
                 $applicant = $record['applicant'];
+            
 
                 // Resolve institution name to ID
                 if (!isset($institutions[$applicant['institution_id']])) {
@@ -58,15 +77,29 @@ class ProjectPersistenceService
                 // Insert project
                 $projectId = $this->projectRepo->insertGetId($project);
 
+                //STRATEGY
+                
                 // Resolve and insert project-tech relationship
-                $techIds = $this->techMatcher->resolveTechIds($project['selectedTechs'], $project['other_tech'], $techs);
+                $strategyContext->setStrategy(app(TechStrategy::class));
+                $techIds = $strategyContext->handle($project['selectedTechs'], $project['other_tech'], $techs, $projectId);
                 $this->projectRepo->insertProjectTechs($projectId, $techIds);
+               
+                //Resolve and insert project-need relationship
+                $strategyContext->setStrategy(app(NeedStrategy::class));
+                $needIds = $strategyContext->handle($project['needs'], $project['other_needs'], $needs, $projectId);
+                $this->projectRepo->insertProjectNeeds($projectId, $needIds);
 
-                // TODO: needs, financial sources, sectors
+                // TODO: funding sources, sectors
             }
         });
     }
 
+
+
+    /**
+     * It gets the id of the record in the database so we can later filter by id instead
+     * of filtering by the string
+     */
     private function resolveId($map, string $name, string $entityName): int
     {
         if (!isset($map[$name])) {

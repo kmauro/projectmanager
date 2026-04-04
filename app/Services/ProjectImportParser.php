@@ -99,15 +99,19 @@ class ProjectImportParser
         'province' => 'provincia',
     
         // Escalamiento
-        'scaling_needs' => 'Necesidades para el escalamiento',
+        'needs' => 'Necesidades para el escalamiento',
         'equipment' => 'Equipamiento',
-        'equipment_detail' => 'Especificá cuál',
+        'other_equipment' => 'Especificá cuál',
         'ip_rights' => 'propiedad intelectual',
-        'ip_countries' => 'máximo tres países',
+        'countries' => 'máximo tres países',
         'other_needs' => 'Otras necesidades',
     ];
+    
 
 
+    /**
+     * Transforms the CSV file rows into an array
+     */
     public function parseFile(string $uploadedFilePath): Collection
     {
         $path = storage_path('app/'.$uploadedFilePath);
@@ -166,7 +170,18 @@ class ProjectImportParser
                     'EBCT_amount' => $this->getValue($row, 59, 'ebct_amount'),
                     'selectedTechs' => $this->getValue($row, 16, 'selected_techs'),
                     'other_tech' => $this->getValue($row, 17, 'other_tech'),
-                ],
+                    'countries' => $this->getValue($row, 73, 'countries'),
+                    'needs' => [
+                        'selectedNeeds' => $this->getValue($row, 69, 'needs'),
+                        'selectedEquipment' => $this->getValue($row, 70, 'equipment'),
+                        'selectedRights' => $this->getValue($row, 72, 'ip_rights')
+                    ],
+                    'other_needs' => [
+                        'other_equipment' => $this->getValue($row, 71, 'other_equipment'),
+                        'other_need' => $this->getValue($row, 74, 'other_needs'),
+                    ],
+                    ''
+                ]
             ]);
         }
 
@@ -176,6 +191,10 @@ class ProjectImportParser
         return collect($projectRegistry);
     }
 
+    /**
+     * Compares the HEADER_MAPPING constant to the headers of the file to know where are the
+     * columns and upload the information correctly.
+     */
     function mapColumnHeaders(array $fileHeaders) {
         
     
@@ -201,7 +220,10 @@ class ProjectImportParser
     }
 
     
-
+    /**
+     * Finds the value using the mapped columns, if the mapped column is not found
+     * it uses the default index where it should be.
+     */
     private function getValue(array $row, int $defaultIndex, string $mapKey): string
     {
         // Use the map if available, otherwise fallback to default index (legacy support)
@@ -217,6 +239,10 @@ class ProjectImportParser
         return $this->normalize($value);
     }
 
+    /**
+     * Reformat the datetime to the format that MySQL uses so we can use a DATETIME
+     * field instead of a string field
+     */
     private function parseDateTime(?string $value): ?string
     {
         if (empty($value)) return null;
@@ -227,6 +253,10 @@ class ProjectImportParser
         }
     }
 
+    /**
+     * Reformat the date to the format that MySQL uses so we can use a DATE
+     * field instead of a string field
+     */
     private function parseDate(?string $value): ?string
     {
         if (empty($value)) return null;
@@ -237,6 +267,10 @@ class ProjectImportParser
         }
     }
 
+    /**
+     * Eliminates tabs and duplicated spaces so the data collected is normalized and
+     * not in a weird format.
+     */
     public function normalize(string $data): string
     {
         $data = trim($data);

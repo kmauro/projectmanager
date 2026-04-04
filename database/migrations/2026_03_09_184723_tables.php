@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use phpDocumentor\Reflection\Types\Nullable;
 
 return new class extends Migration
 {
@@ -69,6 +68,7 @@ return new class extends Migration
             $table->string('located_entity')->nullable(true);
             $table->foreignId('province_id')->nullable(true)->constrained('provinces')->onDelete('cascade');
             $table->string('EBCT_amount')->nullable(true);
+            $table->string('countries')->nullable(true);
         });
         Schema::create('techs', function (Blueprint $table) {
             $table->id();
@@ -84,25 +84,23 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('parent_need_id')->nullable(true)->constrained('needs')->onDelete('cascade');
+            $table->boolean('predefined');
+
         });
         Schema::create('projects_needs', function (Blueprint $table) {
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->foreignId('need_id')->constrained('needs')->onDelete('cascade');
-            $table->string('other_equipment')->nullable(true);
-            $table->string('other_need')->nullable(true);
-            $table->string('countries')->nullable(true);
         });
-        Schema::create('financial_sources', function (Blueprint $table) {
+        Schema::create('funding_sources', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('type');
+            $table->boolean('predefined');
         });
-        Schema::create('projects_financial_sources', function (Blueprint $table) {
+        Schema::create('projects_funding_sources', function (Blueprint $table) {
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
-            $table->foreignId('source_id')->constrained('financial_sources')->onDelete('cascade');
-            $table->string('other_source')->nullable(true);
+            $table->foreignId('source_id')->constrained('funding_sources')->onDelete('cascade');
             $table->float('percentage');
-            $table->integer('amount');
         });
         Schema::create('sectors', function (Blueprint $table) {
             $table->id();
@@ -128,8 +126,8 @@ return new class extends Migration
         Schema::dropIfExists('projects_techs');
         Schema::dropIfExists('needs');
         Schema::dropIfExists('projects_needs');
-        Schema::dropIfExists('financial_sources');
-        Schema::dropIfExists('projects_financial_sources');
+        Schema::dropIfExists('funding_sources');
+        Schema::dropIfExists('projects_funding_sources');
         Schema::dropIfExists('sectors');
         Schema::dropIfExists('projects_sectors');
     }

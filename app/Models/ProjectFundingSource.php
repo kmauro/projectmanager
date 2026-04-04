@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectFinancialSource extends Model
+class ProjectFundingSource extends Model
 {
     public $timestamps = false;
 
-    protected $table = 'projects_financial_sources';
+    protected $table = 'projects_funding_sources';
     
     protected $fillable = [
         

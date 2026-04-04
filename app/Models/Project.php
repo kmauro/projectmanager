@@ -52,9 +52,9 @@ class Project extends Model
         return $this->belongsToMany(Need::class, 'projects_needs');
     }
 
-    public function financialsources()
+    public function fundingSources()
     {
-        return $this->belongsToMany(FinancialSource::class, 'projects_financial_sources');
+        return $this->belongsToMany(FundingSource::class, 'projects_funding_sources');
     }
 
     public function sectors()

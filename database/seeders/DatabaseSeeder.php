@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             SectorSeeder::class,
             TRLLevelSeeder::class,
             TechSeeder::class,
-            FinancialSourceSeeder::class,
+            FundingSourceSeeder::class,
             NeedSeeder::class,
             InstitutionSeeder::class,
             UserSeeder::class
