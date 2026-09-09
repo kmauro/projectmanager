@@ -18,7 +18,6 @@ Route::middleware('auth')->controller(UserController::class)->group(function () 
     Route::get('/profile', 'showProfile')->name('profile');
     Route::get('/users', 'showUsers')->name('users.index');
     Route::get('/users/{user}', 'showUser')->name('users.show');
-    Route::get('/settings', 'showSettings')->name('user.settings');
     Route::post('/profile', 'updateProfile')->name('profile.update');
     Route::post('/profile/updatePassword', 'updatePassword')->name('profile.updatePassword');
 });

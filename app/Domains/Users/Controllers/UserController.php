@@ -32,13 +32,6 @@ class UserController extends Controller
         ]);
     }
 
-    public function showSettings(): InertiaResponse
-    {
-        return Inertia::render('User/Settings', [
-            'title' => 'Ajustes de usuario',
-        ]);
-    }
-
     public function showUsers(UserService $userService): InertiaResponse
     {
         abort_unless((int) Auth::user()?->role_id === 1, 403);

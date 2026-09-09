@@ -109,13 +109,6 @@ function isActive(href) {
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem class="cursor-pointer">
-            <Link href="/settings" view-transition replace class="flex w-full items-center rounded-lg text-sm text-sidebar-foreground">
-                <Settings class="mr-2 h-4 w-4" />
-                <span>Ajustes</span>
-            </Link>
-          </DropdownMenuItem>
-
           <DropdownMenuSeparator />
 
           <DropdownMenuItem as-child class="cursor-pointer">
